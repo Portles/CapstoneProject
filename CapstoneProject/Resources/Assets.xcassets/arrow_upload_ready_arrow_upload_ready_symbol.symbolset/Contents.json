@@ -1,0 +1,12 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "symbols" : [
+    {
+      "filename" : "arrow_upload_ready_arrow_upload_ready_symbol.svg",
+      "idiom" : "universal"
+    }
+  ]
+}

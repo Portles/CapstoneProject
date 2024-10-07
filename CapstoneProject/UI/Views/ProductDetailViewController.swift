@@ -19,6 +19,16 @@ final class ProductDetailViewController: UIViewController {
         return label
     }()
     
+    private let dismissButton: UIButton = {
+        let button: UIButton = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "multiply.circle.fill"), for: .normal)
+        button.layer.cornerRadius = 10
+        button.tintColor = .systemGray5
+        button.imageView?.layer.transform = CATransform3DMakeScale(2, 2, 2)
+        button.clipsToBounds = true
+        return button
+    }()
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         
@@ -32,18 +42,9 @@ final class ProductDetailViewController: UIViewController {
         return label
     }()
     
-    private let stepper: ProductStepper = {
-        let stepper = ProductStepper()
+    private let buyView: BuyView = {
+        let stepper: BuyView = BuyView()
         return stepper
-    }()
-    
-    private let buttonAddToCart: UIButton = {
-        let button: UIButton = UIButton()
-        button.setTitle("Add to Cart", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .systemBlue
-        button.layer.cornerRadius = 10
-        return button
     }()
     
     init(product: Product) {
@@ -75,25 +76,30 @@ final class ProductDetailViewController: UIViewController {
         })
         
         let buttonAction: UIAction = UIAction(handler: { [unowned self] _ in
-            viewModel.addToBasket(product: self.product, orderCount: stepper.currentValue)
+            viewModel.addToBasket(product: self.product, orderCount: buyView.counter)
         })
         
-        buttonAddToCart.addAction(buttonAction, for: .touchUpInside)
+        let dismissButtonAction: UIAction = UIAction(handler: { [unowned self] _ in
+            self.dismiss(animated: true, completion: nil)
+        })
+        
+        buyView.buttonAddToCart.addAction(buttonAction, for: .touchUpInside)
+        dismissButton.addAction(dismissButtonAction, for: .touchUpInside)
 
         view.addSubview(labelTitle)
+        view.addSubview(dismissButton)
         view.addSubview(imageView)
         view.addSubview(labelName)
-        view.addSubview(stepper)
-        view.addSubview(buttonAddToCart)
+        view.addSubview(buyView)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         labelTitle.frame = CGRect(x: 16, y: view.safeAreaInsets.top + 32, width: view.width - 32, height: 42)
+        dismissButton.frame = CGRect(x: view.width - 50, y: view.safeAreaInsets.top + 32, width: 40, height: 40)
         imageView.frame = CGRect(x: 16, y: labelTitle.bottom + 32, width: view.width - 32, height: view.width)
         labelName.frame = CGRect(x: 16, y: imageView.bottom + 16, width: view.width - 32, height: 42)
-        stepper.frame = CGRect(x: 16, y: labelName.bottom + 16, width: view.width - 32, height: 42)
-        buttonAddToCart.frame = CGRect(x: 16, y: stepper.bottom + 16, width: view.width - 32, height: 42)
+        buyView.frame = CGRect(x: 16, y: labelName.bottom + 16, width: view.width - 32, height: 106)
     }
 }

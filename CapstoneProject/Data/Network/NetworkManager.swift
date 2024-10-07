@@ -67,18 +67,18 @@ final class NetworkManager {
         
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.httpBody = "ad=\(product.name)&resim=\(product.image)&kategori=\(product.category)&fiyat=\(product.price)&marka=\(product.brand)&siparisAdeti=\(product.orderCount)&kullaniciAdi=nizamet_ozkan".data(using: .utf8)
+        request.httpBody = product.responseString.data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let response else {
-                result(.failure(.invalidResponse))
-                return
-            }
-            
-            guard let data else {
-                result(.failure(.invalidData))
-                return
-            }
+//            guard let response else {
+//                result(.failure(.invalidResponse))
+//                return
+//            }
+//            
+//            guard let data else {
+//                result(.failure(.invalidData))
+//                return
+//            }
             
             result(.success(true))
         }.resume()
