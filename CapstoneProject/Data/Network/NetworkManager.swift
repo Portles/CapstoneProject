@@ -58,4 +58,29 @@ final class NetworkManager {
         }.resume()
     }
     
+    // Here is some response maybe will be added later
+    func postAddToBasket(product: ProductRequest, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepeteUrunEkle.php") else {
+            result(.failure(.invalidURL))
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = "ad=\(product.name)&resim=\(product.image)&kategori=\(product.category)&fiyat=\(product.price)&marka=\(product.brand)&siparisAdeti=\(product.orderCount)&kullaniciAdi=nizamet_ozkan".data(using: .utf8)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let response else {
+                result(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let data else {
+                result(.failure(.invalidData))
+                return
+            }
+            
+            result(.success(true))
+        }.resume()
+    }
 }
