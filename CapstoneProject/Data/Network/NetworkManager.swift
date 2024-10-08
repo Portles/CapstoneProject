@@ -70,15 +70,72 @@ final class NetworkManager {
         request.httpBody = product.responseString.data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let response else {
-//                result(.failure(.invalidResponse))
-//                return
-//            }
-//            
-//            guard let data else {
-//                result(.failure(.invalidData))
-//                return
-//            }
+            guard let response else {
+                result(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let data else {
+                result(.failure(.invalidData))
+                return
+            }
+            
+            result(.success(true))
+        }.resume()
+    }
+    
+    func fetchBasket(_ result: @escaping (Result<[CartProduct], NetworkError>) -> Void) {
+        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepettekiUrunleriGetir.php") else {
+            result(.failure(.invalidURL))
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = "kullaniciAdi=nizamet_ozkan".data(using: .utf8)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data else {
+                result(.failure(.invalidResponse))
+                return
+            }
+            
+            do {
+                let productResponse: CartProductResponse = try self.decoder.decode(CartProductResponse.self, from: data)
+                result(.success(productResponse.products))
+            } catch {
+                debugPrint(error.localizedDescription)
+                result(.success([]))
+            }
+        }.resume()
+    }
+    
+    func removeItemFromCart(_ cartId: Int, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepettenUrunSil.php") else {
+            result(.failure(.invalidURL))
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = "sepetId=\(cartId)&kullaniciAdi=nizamet_ozkan".data(using: .utf8)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error != nil else {
+                debugPrint(error?.localizedDescription ?? "weird error")
+                result(.success(false))
+                return
+            }
+            
+            guard let response else {
+                result(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let data else {
+                result(.failure(.invalidData))
+                return
+            }
             
             result(.success(true))
         }.resume()

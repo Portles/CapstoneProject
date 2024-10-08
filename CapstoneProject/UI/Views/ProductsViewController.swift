@@ -47,7 +47,9 @@ final class ProductsViewController: UIViewController {
     }
     
     @IBAction func didTapCartButton(_ sender: Any) {
-        
+        let viewController: CartViewController = CartViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: true)
     }
 }
 

@@ -5,7 +5,7 @@
 //  Created by Nizamet Özkan on 7.10.2024.
 //
 
-class ProductDetailViewModel {
+final class ProductDetailViewModel {
     let networkManager: NetworkManager = NetworkManager()
     
     init() {
