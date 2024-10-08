@@ -5,7 +5,7 @@
 //  Created by Nizamet Özkan on 7.10.2024.
 //
 
-struct ProductResponse: Codable {
+struct ProductResponse: Decodable {
     let products: [Product]
     let success: Int
     

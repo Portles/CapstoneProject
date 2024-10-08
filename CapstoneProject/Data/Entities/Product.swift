@@ -5,7 +5,7 @@
 //  Created by Nizamet Özkan on 6.10.2024.
 //
 
-struct Product: Codable {
+struct Product: Decodable {
     let id: Int
     let name: String
     let image: String

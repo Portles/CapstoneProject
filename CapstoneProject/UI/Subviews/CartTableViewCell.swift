@@ -11,7 +11,7 @@ protocol CartTableViewCellDelegate {
     func didTapRemoveButton(_ cartId: Int)
 }
 
-class CartTableViewCell: UITableViewCell {
+final class CartTableViewCell: UITableViewCell {
     static let identifier: String = "CartTableViewCell"
     
     var delegate: CartTableViewCellDelegate?

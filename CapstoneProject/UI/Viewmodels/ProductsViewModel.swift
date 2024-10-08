@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit.UIImage
 import Combine
 
 final class ProductsViewModel {
