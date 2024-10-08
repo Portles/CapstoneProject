@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -84,7 +85,15 @@
                             <constraint firstAttribute="bottom" secondItem="1a4-dh-ui5" secondAttribute="bottom" id="g7m-zu-kXf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Products" id="KNZ-8z-DEF"/>
+                    <navigationItem key="navigationItem" title="Products" id="KNZ-8z-DEF">
+                        <barButtonItem key="rightBarButtonItem" title="cart" style="done" id="ORS-RA-N2G">
+                            <imageReference key="image" image="cart.fill" catalog="system" symbolScale="large" renderingMode="original"/>
+                            <color key="tintColor" red="1" green="0.42596444830000002" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <connections>
+                                <action selector="didTapCartButton:" destination="BYZ-38-t0r" id="eeo-5Z-fzE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="1a4-dh-ui5" id="Dvw-5q-suO"/>
                     </connections>
@@ -98,8 +107,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="naC-bd-Wnp" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RwA-LA-pUY">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="RwA-LA-pUY">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -113,6 +122,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="cart.fill" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

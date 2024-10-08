@@ -45,6 +45,10 @@ final class ProductsViewController: UIViewController {
             }
             .store(in: &cancellables)
     }
+    
+    @IBAction func didTapCartButton(_ sender: Any) {
+        
+    }
 }
 
 extension ProductsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
