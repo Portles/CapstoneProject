@@ -8,7 +8,7 @@
 import UIKit
 
 final class BuyView: UIView {
-    private(set) var counter: Int = 0 {
+    private(set) var counter: Int = 1 {
         didSet {
             counterLabel.text = "\(counter)"
             setButtonsEnability(counter)
@@ -27,7 +27,7 @@ final class BuyView: UIView {
     
     private let counterLabel: UILabel = {
         let label: UILabel = UILabel()
-        label.text = "0"
+        label.text = "1"
         label.font = .preferredFont(forTextStyle: .title1)
         label.textAlignment = .center
         return label
@@ -41,6 +41,7 @@ final class BuyView: UIView {
         button.tintColor = .white
         button.backgroundColor = .orange
         button.layer.cornerRadius = 25
+        button.layer.opacity = 0.3
         button.clipsToBounds = true
         return button
     }()
@@ -51,8 +52,6 @@ final class BuyView: UIView {
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .systemOrange
         button.layer.cornerRadius = 10
-        button.isEnabled = false
-        button.layer.opacity = 0.3
         return button
     }()
     
@@ -72,7 +71,7 @@ final class BuyView: UIView {
         
         let decreaseCounterAction: UIAction = {
             UIAction { [unowned self] _ in
-                if self.counter > 0 {
+                if self.counter > 1 {
                     self.counter -= 1
                 }
             }
@@ -122,14 +121,12 @@ final class BuyView: UIView {
     }
     
     private func setButtonsEnability(_ counter: Int) {
-        if counter == 0 {
+        if counter == 1 {
             decreamentButton.isEnabled = false
-            buttonAddToCart.isEnabled = false
-            buttonAddToCart.layer.opacity = 0.3
+            decreamentButton.layer.opacity = 0.3
         } else {
             decreamentButton.isEnabled = true
-            buttonAddToCart.isEnabled = true
-            buttonAddToCart.layer.opacity = 1.0
+            decreamentButton.layer.opacity = 1.0
         }
     }
 }
