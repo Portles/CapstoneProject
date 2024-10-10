@@ -39,7 +39,7 @@ final class NetworkManager {
     }
     
     static func fetchImages(imageEndpoint: String, _ result: @escaping (Result<Data, NetworkError>) -> Void) -> Void {
-        guard let url = URL(string: "\(URLEndpoints.fetchImages)\(imageEndpoint)") else {
+        guard let url = URL(string: "\(URLEndpoints.fetchImages.rawValue)\(imageEndpoint)") else {
             result(.failure(.invalidURL))
             return
         }
