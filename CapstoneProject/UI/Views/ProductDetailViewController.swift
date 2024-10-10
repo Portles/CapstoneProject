@@ -12,6 +12,8 @@ final class ProductDetailViewController: UIViewController {
     
     private let product: Product
     
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    
     private let labelTitle: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .extraLargeTitle)
@@ -55,7 +57,7 @@ final class ProductDetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,7 +66,7 @@ final class ProductDetailViewController: UIViewController {
         labelName.text = product.name
         NetworkManager.fetchImages(imageEndpoint: product.image, { result in
             switch result {
-                case .success(let imageData):
+            case .success(let imageData):
                 if let image = UIImage(data: imageData) {
                     DispatchQueue.main.async {
                         self.imageView.image = image
@@ -75,26 +77,48 @@ final class ProductDetailViewController: UIViewController {
             }
         })
         
-        let buttonAction: UIAction = UIAction(handler: { [unowned self] _ in
-            viewModel.addToBasket(product: self.product, orderCount: buyView.counter)
+        let buttonAction: UIAction = UIAction(handler: { [weak self] _ in
+            if let product = self?.product, let counter = self?.buyView.counter {
+                self?.viewModel.addToBasket(product: product, orderCount: counter)
+            }
         })
         
-        let dismissButtonAction: UIAction = UIAction(handler: { [unowned self] _ in
-            self.dismiss(animated: true, completion: nil)
+        let dismissButtonAction: UIAction = UIAction(handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
         })
         
         buyView.buttonAddToCart.addAction(buttonAction, for: .touchUpInside)
         dismissButton.addAction(dismissButtonAction, for: .touchUpInside)
-
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
+        
+        view.addSubview(activityIndicator)
+        
         view.addSubview(labelTitle)
         view.addSubview(dismissButton)
         view.addSubview(imageView)
         view.addSubview(labelName)
         view.addSubview(buyView)
     }
-
+    
+    @objc private func performingSomethingChanged() {
+        let isLoading = viewModel.performingSomething
+        activityIndicator.isHidden = !isLoading
+        if isLoading {
+            activityIndicator.startAnimating()
+            view.isUserInteractionEnabled = false
+            view.layer.opacity = 0.3
+        } else {
+            activityIndicator.stopAnimating()
+            view.isUserInteractionEnabled = true
+            view.layer.opacity = 1.0
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        activityIndicator.center = view.center
         
         labelTitle.frame = CGRect(x: 16, y: view.safeAreaInsets.top + 32, width: view.width - 32, height: 42)
         dismissButton.frame = CGRect(x: view.width - 50, y: view.safeAreaInsets.top + 32, width: 40, height: 40)

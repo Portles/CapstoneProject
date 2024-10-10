@@ -38,6 +38,7 @@ final class CartViewController: UIViewController {
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: CartTableViewCell.identifier)
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.allowsSelection = false
         return tableView
     }()
     
@@ -159,10 +160,6 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configure(imageName: cartItem.image, name: cartItem.name, price: cartItem.price, count: cartItem.orderCount)
         
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
     }
 }
 
