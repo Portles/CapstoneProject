@@ -63,6 +63,7 @@ final class CartTableViewCell: UITableViewCell {
     private let blurEffectView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = false
         return blurEffectView
     }()
     
@@ -96,12 +97,15 @@ final class CartTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        blurEffectView.frame = contentView.frame
-        
         NSLayoutConstraint.activate([
+            blurEffectView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            blurEffectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            blurEffectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            blurEffectView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
             productImageView.topAnchor.constraint(equalTo: blurEffectView.topAnchor),
             productImageView.bottomAnchor.constraint(equalTo: blurEffectView.bottomAnchor),
-            productImageView.leadingAnchor.constraint(equalTo: blurEffectView.leadingAnchor),
+            productImageView.leadingAnchor.constraint(equalTo: blurEffectView.leadingAnchor, constant: 10),
             productImageView.widthAnchor.constraint(equalToConstant: 125),
             
             nameLabel.topAnchor.constraint(equalTo: blurEffectView.topAnchor, constant: 20),
@@ -114,7 +118,9 @@ final class CartTableViewCell: UITableViewCell {
             countLabel.bottomAnchor.constraint(equalTo: blurEffectView.bottomAnchor, constant: -20),
             
             removeButton.topAnchor.constraint(equalTo: blurEffectView.topAnchor, constant: 20),
-            removeButton.trailingAnchor.constraint(equalTo: blurEffectView.trailingAnchor, constant: -20)
+            removeButton.trailingAnchor.constraint(equalTo: blurEffectView.trailingAnchor, constant: -20),
+            removeButton.heightAnchor.constraint(equalToConstant: 30),
+            removeButton.widthAnchor.constraint(equalToConstant: 30),
         ])
     }
     

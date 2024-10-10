@@ -36,6 +36,7 @@ final class CartViewController: UIViewController {
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: CartTableViewCell.identifier)
+        tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -141,7 +142,7 @@ final class CartViewController: UIViewController {
 
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        128
+        146
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
