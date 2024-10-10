@@ -41,7 +41,7 @@ final class CartViewModel {
     }
     
     func removeCartItem(_ cartId: Int) {
-        networkManager.removeItemFromCart(cartId) { [weak self] result in
+        networkManager.removeFromCart(cartId) { [weak self] result in
             switch result {
             case .success(_):
                 self?.getCartItems()

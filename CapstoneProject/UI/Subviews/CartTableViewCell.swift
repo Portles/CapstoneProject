@@ -36,7 +36,7 @@ final class CartTableViewCell: UITableViewCell {
     private let priceLabel: UILabel = {
         let label: UILabel = UILabel()
         label.textAlignment = .left
-        label.text = "0$"
+        label.text = "0TL"
         label.font = .systemFont(ofSize: 18, weight: .bold)
         label.textColor = .orange
         label.translatesAutoresizingMaskIntoConstraints = false

@@ -6,7 +6,6 @@
 //
 
 import Foundation.NSURL
-import UIKit.UIImage
 
 final class NetworkManager {
     private let decoder: JSONDecoder = {
@@ -16,7 +15,7 @@ final class NetworkManager {
     }()
     
     func fetchProducts(_ result: @escaping (Result<[Product], NetworkError>) -> Void) {
-        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/tumUrunleriGetir.php") else {
+        guard let url = URL(string: URLEndpoints.fetchProducts.rawValue) else {
             result(.failure(.invalidURL))
             return
         }
@@ -40,7 +39,7 @@ final class NetworkManager {
     }
     
     static func fetchImages(imageEndpoint: String, _ result: @escaping (Result<Data, NetworkError>) -> Void) -> Void {
-        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/resimler/\(imageEndpoint)") else {
+        guard let url = URL(string: "\(URLEndpoints.fetchImages)\(imageEndpoint)") else {
             result(.failure(.invalidURL))
             return
         }
@@ -59,8 +58,8 @@ final class NetworkManager {
     }
     
     // Here is some response maybe will be added later
-    func postAddToBasket(product: ProductRequest, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
-        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepeteUrunEkle.php") else {
+    func addToBasket(product: ProductRequest, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+        guard let url = URL(string: URLEndpoints.addToBasket.rawValue) else {
             result(.failure(.invalidURL))
             return
         }
@@ -70,12 +69,12 @@ final class NetworkManager {
         request.httpBody = product.responseString.data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let response else {
+            guard response != nil else {
                 result(.failure(.invalidResponse))
                 return
             }
             
-            guard let data else {
+            guard data != nil else {
                 result(.failure(.invalidData))
                 return
             }
@@ -85,7 +84,7 @@ final class NetworkManager {
     }
     
     func fetchBasket(_ result: @escaping (Result<[CartProduct], NetworkError>) -> Void) {
-        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepettekiUrunleriGetir.php") else {
+        guard let url = URL(string: URLEndpoints.fectBasket.rawValue) else {
             result(.failure(.invalidURL))
             return
         }
@@ -110,8 +109,8 @@ final class NetworkManager {
         }.resume()
     }
     
-    func removeItemFromCart(_ cartId: Int, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
-        guard let url = URL(string: "http://kasimadalan.pe.hu/urunler/sepettenUrunSil.php") else {
+    func removeFromCart(_ cartId: Int, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+        guard let url = URL(string: URLEndpoints.removeFromBasket.rawValue) else {
             result(.failure(.invalidURL))
             return
         }
@@ -127,12 +126,12 @@ final class NetworkManager {
                 return
             }
             
-            guard let response else {
+            guard response != nil else {
                 result(.failure(.invalidResponse))
                 return
             }
             
-            guard let data else {
+            guard data != nil else {
                 result(.failure(.invalidData))
                 return
             }

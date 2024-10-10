@@ -15,7 +15,7 @@ final class ProductDetailViewModel {
     func addToBasket(product: Product, orderCount: Int) {
         let productRequest: ProductRequest = ProductRequest(name: product.name, image: product.image, category: product.category, price: product.price, brand: product.brand, orderCount: orderCount)
         
-        networkManager.postAddToBasket(product: productRequest) { result in
+        networkManager.addToBasket(product: productRequest) { result in
             switch result {
                 case .success:
                 print("Added to basket successfully")
