@@ -154,8 +154,9 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
         let cartItem: CartProduct = viewModel.cartProducts[indexPath.row]
         
         cell.delegate = self
+        cell.index = indexPath
         
-        cell.configure(cartId: cartItem.cartId, imageName: cartItem.image, name: cartItem.name, price: cartItem.price, count: cartItem.orderCount)
+        cell.configure(imageName: cartItem.image, name: cartItem.name, price: cartItem.price, count: cartItem.orderCount)
         
         return cell
     }
@@ -166,7 +167,9 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension CartViewController: CartTableViewCellDelegate {
-    func didTapRemoveButton(_ cartId: Int) {
-        viewModel.removeCartItem(cartId)
+    func didTapRemoveButton(_ index: IndexPath) {
+        let cartItem: CartProduct = viewModel.cartProducts[index.row]
+        
+        viewModel.removeCartItem(cartItem)
     }
 }

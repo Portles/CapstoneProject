@@ -8,7 +8,7 @@
 import UIKit.UITableViewCell
 
 protocol CartTableViewCellDelegate {
-    func didTapRemoveButton(_ cartId: Int)
+    func didTapRemoveButton(_ index: IndexPath)
 }
 
 final class CartTableViewCell: UITableViewCell {
@@ -16,7 +16,7 @@ final class CartTableViewCell: UITableViewCell {
     
     var delegate: CartTableViewCellDelegate?
     
-    private var cartId: Int?
+    var index: IndexPath?
     
     private let productImageView: UIImageView = {
         let imageView: UIImageView = UIImageView()
@@ -74,8 +74,8 @@ final class CartTableViewCell: UITableViewCell {
         blurEffectView.layer.masksToBounds = true
         
         let removeAction: UIAction = UIAction { [weak self] _ in
-            if let cartId = self?.cartId {
-                self?.delegate?.didTapRemoveButton(cartId)
+            if let index = self?.index {
+                self?.delegate?.didTapRemoveButton(index)
             }
         }
         
@@ -124,8 +124,7 @@ final class CartTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(cartId: Int, imageName: String, name: String, price: Int, count: Int) {
-        self.cartId = cartId
+    func configure(imageName: String, name: String, price: Int, count: Int) {
         NetworkManager.fetchImages(imageEndpoint: imageName) { result in
             switch result {
             case .success(let imageData):

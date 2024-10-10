@@ -12,7 +12,7 @@ struct CartProduct: Decodable {
     let category: String
     let price: Int
     let brand: String
-    let orderCount: Int
+    var orderCount: Int
     let username: String
     
     enum CodingKeys: String, CodingKey {
