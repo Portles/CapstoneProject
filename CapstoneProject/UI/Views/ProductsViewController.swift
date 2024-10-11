@@ -23,7 +23,7 @@ final class ProductsViewController: UIViewController {
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         
-        let screenSize = (UIScreen.main.bounds.width - 30) / 2
+        let screenSize = (view.width - 30) / 2
         
         let itemSize = CGSize(width: screenSize, height: screenSize * 1.2)
         
@@ -44,6 +44,26 @@ final class ProductsViewController: UIViewController {
                 self?.collectionView.reloadData()
             }
             .store(in: &cancellables)
+    }
+    
+    @IBAction func didSegmentValueChanged(_ sender: UISegmentedControl) {
+        let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        var newSize: CGSize
+        let screenSize = (view.width - 30) / 2
+        
+        switch sender.selectedSegmentIndex {
+        case 0:
+            newSize = CGSize(width: screenSize, height: screenSize * 1.2)
+        case 1:
+            newSize = CGSize(width: view.width, height: view.width * 0.5)
+        default:
+            newSize = CGSize(width: screenSize, height: screenSize * 1.2)
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            layout?.itemSize = newSize
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        }
     }
     
     @IBAction func didTapCartButton(_ sender: Any) {

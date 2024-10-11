@@ -86,13 +86,28 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Products" id="KNZ-8z-DEF">
-                        <barButtonItem key="rightBarButtonItem" title="cart" style="done" id="ORS-RA-N2G">
-                            <imageReference key="image" image="cart.fill" catalog="system" symbolScale="large" renderingMode="original"/>
-                            <color key="tintColor" red="1" green="0.42596444830000002" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <connections>
-                                <action selector="didTapCartButton:" destination="BYZ-38-t0r" id="eeo-5Z-fzE"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="cart" style="done" id="ORS-RA-N2G">
+                                <imageReference key="image" image="cart.fill" catalog="system" symbolScale="large" renderingMode="original"/>
+                                <color key="tintColor" red="1" green="0.42596444830000002" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="didTapCartButton:" destination="BYZ-38-t0r" id="eeo-5Z-fzE"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem id="3kv-Wr-3HX">
+                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="bar" selectedSegmentIndex="0" id="Zgm-2X-PfG">
+                                    <rect key="frame" x="221.33333333333337" y="5.6666666666666679" width="107" height="33"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <segments>
+                                        <segment title="Small"/>
+                                        <segment title="Huge"/>
+                                    </segments>
+                                    <connections>
+                                        <action selector="didSegmentValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="PNP-q7-pA9"/>
+                                    </connections>
+                                </segmentedControl>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="1a4-dh-ui5" id="Dvw-5q-suO"/>
