@@ -12,7 +12,11 @@ final class ProductDetailViewController: UIViewController {
     
     private let product: Product
     
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
+        activityIndicator.backgroundColor = .secondarySystemBackground
+        return activityIndicator
+    }()
     
     private let labelTitle: UILabel = {
         let label = UILabel()
@@ -107,11 +111,9 @@ final class ProductDetailViewController: UIViewController {
         if isLoading {
             activityIndicator.startAnimating()
             view.isUserInteractionEnabled = false
-            view.layer.opacity = 0.3
         } else {
             activityIndicator.stopAnimating()
             view.isUserInteractionEnabled = true
-            view.layer.opacity = 1.0
         }
     }
     
@@ -119,11 +121,12 @@ final class ProductDetailViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         activityIndicator.center = view.center
+        activityIndicator.frame = view.bounds
         
         labelTitle.frame = CGRect(x: 16, y: view.safeAreaInsets.top + 32, width: view.width - 32, height: 42)
         dismissButton.frame = CGRect(x: view.width - 50, y: view.safeAreaInsets.top + 32, width: 40, height: 40)
         imageView.frame = CGRect(x: 16, y: labelTitle.bottom + 32, width: view.width - 32, height: view.width)
         labelName.frame = CGRect(x: 16, y: imageView.bottom + 16, width: view.width - 32, height: 42)
-        buyView.frame = CGRect(x: 16, y: labelName.bottom + 16, width: view.width - 32, height: 106)
+        buyView.frame = CGRect(x: 16, y: labelName.bottom + 16, width: view.width - 32, height: 142)
     }
 }

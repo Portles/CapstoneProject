@@ -83,7 +83,5 @@ final class CartViewModel {
         }
         
         self.cartProducts = mergedProducts
-        
-        debugPrint(rawCartProducts)
     }
 }
