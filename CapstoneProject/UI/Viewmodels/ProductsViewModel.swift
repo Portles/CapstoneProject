@@ -29,4 +29,9 @@ final class ProductsViewModel {
             }
         }
     }
+    
+    func reArrangeProduct(_ sourceIndexPath: IndexPath, _ destinationIndexPath: IndexPath, _ product: Product) {
+        products.remove(at: sourceIndexPath.row)
+        products.insert(product, at: destinationIndexPath.row)
+    }
 }

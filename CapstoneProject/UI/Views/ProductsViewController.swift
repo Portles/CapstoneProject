@@ -34,6 +34,11 @@ final class ProductsViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
+        
+        collectionView.dragInteractionEnabled = true
+        
         bindViewModel()
     }
     
@@ -96,5 +101,40 @@ extension ProductsViewController: UICollectionViewDelegate, UICollectionViewData
         viewController.modalPresentationStyle = .fullScreen
         
         present(viewController, animated: true, completion: nil)
+    }
+}
+
+extension ProductsViewController: UICollectionViewDragDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let product = viewModel.products[indexPath.row]
+        let itemProvider = NSItemProvider(object: product.name as NSString)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        dragItem.localObject = product
+        return [dragItem]
+    }
+}
+
+extension ProductsViewController: UICollectionViewDropDelegate {
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: any UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        if collectionView.hasActiveDrag {
+            return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        }
+        return UICollectionViewDropProposal(operation: .forbidden)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
+        
+        for item in coordinator.items {
+            if let sourceIndexPath = item.sourceIndexPath, let product = item.dragItem.localObject as? Product {
+                viewModel.reArrangeProduct(sourceIndexPath, destinationIndexPath, product)
+                
+                collectionView.performBatchUpdates({
+                    collectionView.deleteItems(at: [sourceIndexPath])
+                    collectionView.insertItems(at: [destinationIndexPath])
+                })
+                coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+            }
+        }
     }
 }
