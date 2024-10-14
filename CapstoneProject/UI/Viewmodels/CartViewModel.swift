@@ -11,15 +11,21 @@ import Combine
 final class CartViewModel {
     private let networkManager: NetworkManager = NetworkManager()
     
+    var performingSomething: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
+            }
+        }
+    }
+    
     @Published private(set) var cartProducts: [CartProduct] = []
     
     private var rawCartProducts: [CartProduct] = []
     
-    init() {
-        getCartItems()
-    }
-    
-    private func getCartItems() {
+    func getCartItems() {
+        performingSomething = true
+        
         networkManager.fetchBasket { [weak self] result in
             switch result {
             case .success(let basketItems):
@@ -42,7 +48,7 @@ final class CartViewModel {
     
     func removeCartItem(_ cartProduct: CartProduct) {
         let cartIdsToRemove: [Int] = rawCartProducts.compactMap { rawCartProduct in
-            guard rawCartProduct.name == cartProduct.name, rawCartProduct.price == cartProduct.price, rawCartProduct.image == cartProduct.image, rawCartProduct.category == cartProduct.category else {
+            guard rawCartProduct.name == cartProduct.name, rawCartProduct.price == cartProduct.price, rawCartProduct.image == cartProduct.image, rawCartProduct.category == cartProduct.category, rawCartProduct.brand == cartProduct.brand else {
                 return nil
             }
             
@@ -82,6 +88,26 @@ final class CartViewModel {
             }
         }
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.performingSomething = false
+        }
         self.cartProducts = mergedProducts
+    }
+    
+    func confirmPurchases() {
+        if !rawCartProducts.isEmpty {
+            for rawCartProduct in rawCartProducts {
+                networkManager.removeFromCart(rawCartProduct.cartId) { [weak self] result in
+                    switch result {
+                    case .success(_):
+                        if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
+                            self?.getCartItems()
+                        }
+                    case .failure(let error):
+                        debugPrint(error.localizedDescription)
+                    }
+                }
+            }
+        }
     }
 }

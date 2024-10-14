@@ -13,30 +13,17 @@ final class CartViewController: UIViewController {
     
     private var cancellables: Set<AnyCancellable> = []
     
-    private let labelTitle: UILabel = {
-        let label: UILabel = UILabel()
-        label.text = "My Cart"
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: .init(24), weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let dismissButton: UIButton = {
-        let button: UIButton = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "multiply.circle.fill"), for: .normal)
-        button.layer.cornerRadius = 10
-        button.tintColor = .systemGray5
-        button.imageView?.layer.transform = CATransform3DMakeScale(2, 2, 2)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.clipsToBounds = true
-        return button
+    private let activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
+        activityIndicator.backgroundColor = .secondarySystemBackground
+        activityIndicator.layer.zPosition = 999
+        activityIndicator.layer.opacity = 0.4
+        return activityIndicator
     }()
     
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.register(CartTableViewCell.self, forCellReuseIdentifier: CartTableViewCell.identifier)
-        tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.allowsSelection = false
         return tableView
@@ -76,46 +63,78 @@ final class CartViewController: UIViewController {
         
         bindViewModel()
         
-        tableView.delegate = self
-        tableView.dataSource = self
+        configureUIElements()
         
-        let dismissButtonAction: UIAction = UIAction(handler: { [unowned self] _ in
-            self.dismiss(animated: true, completion: nil)
-        })
-        
-        dismissButton.addAction(dismissButtonAction, for: .touchUpInside)
-        
-        view.addSubview(labelTitle)
-        view.addSubview(dismissButton)
         view.addSubview(tableView)
         view.addSubview(totalPriceLabel)
         view.addSubview(totalPriceValueLabel)
         view.addSubview(confirmPurchasesButton)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.getCartItems()
+    }
+    
     private func bindViewModel() {
         viewModel.$cartProducts
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] newValue in
                 self?.tableView.reloadData()
                 self?.calculatePrice()
+                
+                if newValue.isEmpty {
+                    self?.confirmPurchasesButton.isEnabled = false
+                    self?.confirmPurchasesButton.layer.opacity = 0.3
+                } else {
+                    self?.confirmPurchasesButton.isEnabled = true
+                    self?.confirmPurchasesButton.layer.opacity = 1.0
+                }
             }
             .store(in: &cancellables)
+    }
+    
+    private func configureUIElements() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .none
+        tableView.separatorColor = .clear
+        
+        let confirmButtonAction: UIAction = UIAction(handler: { [weak self] _ in
+            let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { _ in
+                self?.viewModel.confirmPurchases()
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
+            self?.present(alert, animated: true, completion: nil)
+        })
+        
+        confirmPurchasesButton.addAction(confirmButtonAction, for: .touchUpInside)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
+        
+        view.addSubview(activityIndicator)
+    }
+    
+    @objc private func performingSomethingChanged() {
+        let isLoading = viewModel.performingSomething
+        activityIndicator.isHidden = !isLoading
+        if isLoading {
+            activityIndicator.startAnimating()
+            view.isUserInteractionEnabled = false
+        } else {
+            activityIndicator.stopAnimating()
+            view.isUserInteractionEnabled = true
+        }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        activityIndicator.center = view.center
+        activityIndicator.frame = view.bounds
+        
         NSLayoutConstraint.activate([
-            labelTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            labelTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            labelTitle.widthAnchor.constraint(equalToConstant: 120),
-            
-            dismissButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            dismissButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            dismissButton.widthAnchor.constraint(equalToConstant: 50),
-            dismissButton.heightAnchor.constraint(equalToConstant: 50),
-            
             confirmPurchasesButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             confirmPurchasesButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             confirmPurchasesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
@@ -129,7 +148,7 @@ final class CartViewController: UIViewController {
             totalPriceValueLabel.widthAnchor.constraint(equalToConstant: 100),
             totalPriceValueLabel.bottomAnchor.constraint(equalTo: confirmPurchasesButton.topAnchor, constant: -20),
             
-            tableView.topAnchor.constraint(equalTo: labelTitle.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: totalPriceLabel.topAnchor, constant: -20)

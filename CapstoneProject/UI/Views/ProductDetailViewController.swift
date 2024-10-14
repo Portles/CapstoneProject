@@ -15,6 +15,8 @@ final class ProductDetailViewController: UIViewController {
     private let activityIndicator: UIActivityIndicatorView = {
         let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
         activityIndicator.backgroundColor = .secondarySystemBackground
+        activityIndicator.layer.zPosition = 999
+        activityIndicator.layer.opacity = 0.4
         return activityIndicator
     }()
     

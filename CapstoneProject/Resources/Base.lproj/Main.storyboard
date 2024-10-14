@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="naC-bd-Wnp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ljp-w8-m72">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -86,28 +85,19 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Products" id="KNZ-8z-DEF">
-                        <rightBarButtonItems>
-                            <barButtonItem title="cart" style="done" id="ORS-RA-N2G">
-                                <imageReference key="image" image="cart.fill" catalog="system" symbolScale="large" renderingMode="original"/>
-                                <color key="tintColor" red="1" green="0.42596444830000002" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <barButtonItem key="rightBarButtonItem" id="3kv-Wr-3HX">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="bar" selectedSegmentIndex="0" id="Zgm-2X-PfG">
+                                <rect key="frame" x="270" y="5.6666666666666679" width="107" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="Small"/>
+                                    <segment title="Huge"/>
+                                </segments>
                                 <connections>
-                                    <action selector="didTapCartButton:" destination="BYZ-38-t0r" id="eeo-5Z-fzE"/>
+                                    <action selector="didSegmentValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="PNP-q7-pA9"/>
                                 </connections>
-                            </barButtonItem>
-                            <barButtonItem id="3kv-Wr-3HX">
-                                <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="bar" selectedSegmentIndex="0" id="Zgm-2X-PfG">
-                                    <rect key="frame" x="221.33333333333337" y="5.6666666666666679" width="107" height="33"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <segments>
-                                        <segment title="Small"/>
-                                        <segment title="Huge"/>
-                                    </segments>
-                                    <connections>
-                                        <action selector="didSegmentValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="PNP-q7-pA9"/>
-                                    </connections>
-                                </segmentedControl>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                            </segmentedControl>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="1a4-dh-ui5" id="Dvw-5q-suO"/>
@@ -115,12 +105,46 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1011.4503816793892" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="1938.1679389312976" y="-27.464788732394368"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Cart-->
+        <scene sceneID="Kdr-XW-zIV">
+            <objects>
+                <navigationController id="xcR-cn-fnN" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Cart" image="cart.fill" catalog="system" id="KUk-V5-6Bu"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="NNf-TR-t6g">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Qe6-8D-ito" kind="relationship" relationship="rootViewController" id="ZPb-dT-Aes"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zpa-cH-9UG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1011" y="704"/>
+        </scene>
+        <!--My Cart-->
+        <scene sceneID="MPi-az-gaJ">
+            <objects>
+                <viewController id="Qe6-8D-ito" customClass="CartViewController" customModule="CapstoneProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="XzV-3E-pzf">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="Gzl-et-HwL"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="My Cart" largeTitleDisplayMode="always" id="8dV-08-OaH"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LGz-70-sDO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1938" y="704"/>
+        </scene>
+        <!--Shop-->
         <scene sceneID="N3e-1c-nA5">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="naC-bd-Wnp" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Shop" image="bag.fill" catalog="system" id="g7f-BZ-5up"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="RwA-LA-pUY">
                         <rect key="frame" x="0.0" y="59" width="393" height="96"/>
@@ -133,10 +157,29 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yQp-G0-fCk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1011.4503816793892" y="-27.464788732394368"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="6Te-3h-tKC">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="ljp-w8-m72" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="fY4-mo-AZq">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="naC-bd-Wnp" kind="relationship" relationship="viewControllers" id="mXo-Gw-LYf"/>
+                        <segue destination="xcR-cn-fnN" kind="relationship" relationship="viewControllers" id="rMw-D6-2xs"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1Ic-8h-dyx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
             <point key="canvasLocation" x="84.732824427480907" y="-27.464788732394368"/>
         </scene>
     </scenes>
     <resources>
+        <image name="bag.fill" catalog="system" width="128" height="128"/>
         <image name="cart.fill" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
