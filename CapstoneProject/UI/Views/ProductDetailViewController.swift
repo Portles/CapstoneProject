@@ -69,6 +69,18 @@ final class ProductDetailViewController: UIViewController {
         
         view.backgroundColor = .systemBackground
         
+        configureUIElement()
+        
+        view.addSubview(activityIndicator)
+        
+        view.addSubview(labelTitle)
+        view.addSubview(dismissButton)
+        view.addSubview(imageView)
+        view.addSubview(labelName)
+        view.addSubview(buyView)
+    }
+    
+    private func configureUIElement() {
         labelName.text = product.name
         NetworkManager.fetchImages(imageEndpoint: product.image, { result in
             switch result {
@@ -98,13 +110,6 @@ final class ProductDetailViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
         
-        view.addSubview(activityIndicator)
-        
-        view.addSubview(labelTitle)
-        view.addSubview(dismissButton)
-        view.addSubview(imageView)
-        view.addSubview(labelName)
-        view.addSubview(buyView)
     }
     
     @objc private func performingSomethingChanged() {

@@ -12,7 +12,7 @@ struct ProductRequest {
     let price: Int
     let brand: String
     let orderCount: Int
-    let userName: String = "nizamet_ozkan"
+    private let userName: String = "nizamet_ozkan"
     
     init(name: String, image: String, category: String, price: Int, brand: String, orderCount: Int) {
         self.name = name

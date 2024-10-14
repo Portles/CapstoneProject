@@ -17,6 +17,13 @@ final class ProductsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureUIElements()
+        
+        bindViewModel()
+    }
+    
+    private func configureUIElements() {
         let layout = UICollectionViewFlowLayout()
         
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -38,8 +45,6 @@ final class ProductsViewController: UIViewController {
         collectionView.dropDelegate = self
         
         collectionView.dragInteractionEnabled = true
-        
-        bindViewModel()
     }
     
     private func bindViewModel() {
