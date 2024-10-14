@@ -71,11 +71,6 @@ final class CartViewController: UIViewController {
         view.addSubview(confirmPurchasesButton)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.getCartItems()
-    }
-    
     private func bindViewModel() {
         viewModel.$cartProducts
             .receive(on: DispatchQueue.main)
@@ -101,12 +96,24 @@ final class CartViewController: UIViewController {
         tableView.separatorColor = .clear
         
         let confirmButtonAction: UIAction = UIAction(handler: { [weak self] _ in
-            let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { _ in
-                self?.viewModel.confirmPurchases()
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
-            self?.present(alert, animated: true, completion: nil)
+            if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {
+                let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { _ in
+                    self?.viewModel.confirmPurchases()
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
+                self?.present(alert, animated: true, completion: nil)
+            } else {
+                let vc = LoginViewController()
+                vc.modalPresentationStyle = .pageSheet
+                if let sheet = vc.sheetPresentationController {
+                    sheet.detents = [.custom { _ in
+                        return 180
+                    }]
+                    sheet.prefersGrabberVisible = true
+                }
+                self?.present(vc, animated: true)
+            }
         })
         
         confirmPurchasesButton.addAction(confirmButtonAction, for: .touchUpInside)

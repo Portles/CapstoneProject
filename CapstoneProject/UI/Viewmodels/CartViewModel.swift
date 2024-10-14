@@ -23,7 +23,11 @@ final class CartViewModel {
     
     private var rawCartProducts: [CartProduct] = []
     
-    func getCartItems() {
+    init() {
+        getCartItems()
+    }
+    
+    private func getCartItems() {
         performingSomething = true
         
         networkManager.fetchBasket { [weak self] result in

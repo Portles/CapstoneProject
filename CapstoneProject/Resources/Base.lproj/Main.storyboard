@@ -140,6 +140,39 @@
             </objects>
             <point key="canvasLocation" x="1938" y="704"/>
         </scene>
+        <!--Profile-->
+        <scene sceneID="kfr-8W-Ruj">
+            <objects>
+                <navigationController id="whN-Sc-oac" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Profile" image="person.crop.circle.fill" catalog="system" id="mbG-8A-4Zp"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cQU-NA-VpX">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="4Lq-5I-592" kind="relationship" relationship="rootViewController" id="yTP-Ya-T4W"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="csm-YS-ota" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1011" y="1425"/>
+        </scene>
+        <!--Profile View Controller-->
+        <scene sceneID="zWE-nW-Tba">
+            <objects>
+                <viewController id="4Lq-5I-592" customClass="ProfileViewController" customModule="CapstoneProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QTL-FQ-CcD">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="65y-QQ-eNF"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="WO5-su-F2L"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="z3P-A4-zqC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1938" y="1425"/>
+        </scene>
         <!--Shop-->
         <scene sceneID="N3e-1c-nA5">
             <objects>
@@ -165,12 +198,14 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="ljp-w8-m72" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="fY4-mo-AZq">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
                         <segue destination="naC-bd-Wnp" kind="relationship" relationship="viewControllers" id="mXo-Gw-LYf"/>
                         <segue destination="xcR-cn-fnN" kind="relationship" relationship="viewControllers" id="rMw-D6-2xs"/>
+                        <segue destination="whN-Sc-oac" kind="relationship" relationship="viewControllers" id="F0F-BE-5Ar"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Ic-8h-dyx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -181,6 +216,7 @@
     <resources>
         <image name="bag.fill" catalog="system" width="128" height="128"/>
         <image name="cart.fill" catalog="system" width="128" height="102"/>
+        <image name="person.crop.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
