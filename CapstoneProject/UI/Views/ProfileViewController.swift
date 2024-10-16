@@ -9,8 +9,18 @@ import UIKit
 import FirebaseAuth
 
 final class ProfileViewController: UIViewController {
+    private let viewModel: ProfileViewModel = ProfileViewModel()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
+        activityIndicator.backgroundColor = .secondarySystemBackground
+        activityIndicator.layer.zPosition = 999
+        activityIndicator.layer.opacity = 0.4
+        return activityIndicator
+    }()
+    
     private let loginToSeeView: LoginToSeeView = {
-       let view = LoginToSeeView()
+        let view = LoginToSeeView()
         return view
     }()
     
@@ -23,12 +33,41 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
+        
+        view.addSubview(activityIndicator)
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = true
+        }
         AppleSignInManager.shared.delegate = self
         checkLoginStatus()
-        super.viewDidAppear(animated)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = false
+        }
+    }
+    
+    @objc private func performingSomethingChanged() {
+        let isLoading = viewModel.performingSomething
+        activityIndicator.isHidden = !isLoading
+        if isLoading {
+            activityIndicator.startAnimating()
+            view.isUserInteractionEnabled = false
+        } else {
+            activityIndicator.stopAnimating()
+            view.isUserInteractionEnabled = true
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        activityIndicator.center = view.center
+        activityIndicator.frame = view.bounds
     }
     
     private func checkLoginStatus() {
@@ -64,16 +103,32 @@ final class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: LoggedInViewDelegate {
+    func didTapBuyButton() {
+        self.navigationController?.tabBarController?.selectedIndex = 0
+    }
+    
     func logoutButtonTapped() {
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = true
+        }
         setLogoutedView()
         loggedInView.removeFromSuperview()
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = false
+        }
     }
 }
 
 extension ProfileViewController: AppleSignInDelegate {
     func appleSignInDidComplete(user: FirebaseAuth.User) {
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = true
+        }
         setLoggedView()
         loginToSeeView.removeFromSuperview()
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.performingSomething = false
+        }
     }
     
     func appleSignInDidFail(error: any Error) {

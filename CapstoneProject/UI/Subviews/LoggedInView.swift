@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 
 protocol LoggedInViewDelegate: AnyObject {
+    func didTapBuyButton()
     func logoutButtonTapped()
 }
 
@@ -64,6 +65,7 @@ final class LoggedInView: UIView {
         label.textColor = .label
         label.text = "Latest Purchase"
         label.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -72,8 +74,15 @@ final class LoggedInView: UIView {
        let tableView = UITableView()
         tableView.register(LatestPurchasesTableViewCell.self, forCellReuseIdentifier: LatestPurchasesTableViewCell.identifier)
         tableView.allowsSelection = false
+        tableView.isHidden = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }()
+    
+    private let noLatestPurchaseview: NoLatestPurchaseView = {
+        let view = NoLatestPurchaseView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     weak var delegate: LoggedInViewDelegate?
@@ -84,6 +93,8 @@ final class LoggedInView: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
+        noLatestPurchaseview.delegate = self
+        
         let logoutButtonAction: UIAction = UIAction { [weak self] _ in
             if AppleSignInFirebaseAuth.shared.logOutUser() {
                 self?.delegate?.logoutButtonTapped()
@@ -92,7 +103,7 @@ final class LoggedInView: UIView {
         
         logoutButton.addAction(logoutButtonAction, for: .touchUpInside)
         
-        [logoutButton, emailLabel, emailKeyLabel, nameLabel, nameKeyLabel, buyHistoryLabel, tableView].forEach(addSubview)
+        [logoutButton, emailLabel, emailKeyLabel, nameLabel, nameKeyLabel, buyHistoryLabel, tableView, noLatestPurchaseview].forEach(addSubview)
         
         getLatestPurchase()
     }
@@ -141,19 +152,30 @@ final class LoggedInView: UIView {
             tableView.topAnchor.constraint(equalTo: buyHistoryLabel.bottomAnchor, constant: 10),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            noLatestPurchaseview.topAnchor.constraint(equalTo: buyHistoryLabel.bottomAnchor, constant: 10),
+            noLatestPurchaseview.leadingAnchor.constraint(equalTo: leadingAnchor),
+            noLatestPurchaseview.trailingAnchor.constraint(equalTo: trailingAnchor),
+            noLatestPurchaseview.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     
     func getLatestPurchase() {
         FirebaseManager.fetchBuyHistories { [weak self] model, error in
             guard error == nil else {
+                self?.buyHistoryLabel.isHidden = true
+                self?.noLatestPurchaseview.isHidden = false
+                self?.tableView.isHidden = true
                 debugPrint(error?.localizedDescription ?? "Fetch buy histories error")
                 return
             }
             
             if let model {
+                self?.buyHistoryLabel.isHidden = false
+                self?.noLatestPurchaseview.isHidden = true
                 self?.lastPurchases = model.buyyedProducts
+                self?.tableView.isHidden = false
                 self?.tableView.reloadData()
             }
         }
@@ -179,5 +201,11 @@ extension LoggedInView: UITableViewDelegate, UITableViewDataSource {
         } else {
             return UITableViewCell()
         }
+    }
+}
+
+extension LoggedInView: NoLatestPurchaseViewDelegate {
+    func goBuyButtonTapped() {
+        delegate?.didTapBuyButton()
     }
 }
