@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CA27B4472CBD48410084EBF7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CA27B4462CBD48410084EBF7 /* FirebaseAuth */; };
+		CAF66D132CBE79510007E387 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CAF66D122CBE79510007E387 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA27B4472CBD48410084EBF7 /* FirebaseAuth in Frameworks */,
+				CAF66D132CBE79510007E387 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				CAD3CD3E2CB286A30014D20B /* CapstoneProject */,
+				CAF66D112CBE79510007E387 /* Frameworks */,
 				CAD3CD3D2CB286A30014D20B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +64,13 @@
 				CAD3CD3C2CB286A30014D20B /* CapstoneProject.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CAF66D112CBE79510007E387 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,6 +94,7 @@
 			name = CapstoneProject;
 			packageProductDependencies = (
 				CA27B4462CBD48410084EBF7 /* FirebaseAuth */,
+				CAF66D122CBE79510007E387 /* FirebaseFirestore */,
 			);
 			productName = CapstoneProject;
 			productReference = CAD3CD3C2CB286A30014D20B /* CapstoneProject.app */;
@@ -161,8 +172,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -194,8 +205,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -371,6 +382,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CA27B4452CBD48410084EBF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		CAF66D122CBE79510007E387 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CA27B4452CBD48410084EBF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

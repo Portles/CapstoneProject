@@ -13,7 +13,7 @@ protocol AppleSignInButtonDelegate: AnyObject {
     func didSignIn()
 }
 
-public class AppleSignInButton: UIButton {
+final public class AppleSignInButton: UIButton {
     weak var delegate: AppleSignInButtonDelegate?
     
     public override init(frame: CGRect) {

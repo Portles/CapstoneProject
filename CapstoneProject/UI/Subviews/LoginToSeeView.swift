@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoginToSeeView: UIView {
+final class LoginToSeeView: UIView {
     private let blurEffectView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .systemThickMaterial)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
@@ -24,7 +24,7 @@ class LoginToSeeView: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Login to see your profile"
+        label.text = "Login to see your profile or purchase"
         label.font = .preferredFont(forTextStyle: .headline)
         label.textColor = .label
         label.textAlignment = .center

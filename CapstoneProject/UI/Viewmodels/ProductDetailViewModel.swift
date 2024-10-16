@@ -28,12 +28,12 @@ final class ProductDetailViewModel {
         networkManager.addToBasket(product: productRequest) { [weak self] result in
             switch result {
                 case .success:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                     self?.performingSomething = false
                 }
                 print("Added to basket successfully")
             case .failure:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                     self?.performingSomething = false
                 }
                 print("Failed to add to basket")

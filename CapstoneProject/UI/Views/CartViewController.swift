@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import FirebaseAuth
 
 final class CartViewController: UIViewController {
     private let viewModel: CartViewModel = CartViewModel()
@@ -71,6 +72,12 @@ final class CartViewController: UIViewController {
         view.addSubview(confirmPurchasesButton)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        viewModel.getCartItems()
+    }
+    
     private func bindViewModel() {
         viewModel.$cartProducts
             .receive(on: DispatchQueue.main)
@@ -104,15 +111,7 @@ final class CartViewController: UIViewController {
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
             } else {
-                let vc = LoginViewController()
-                vc.modalPresentationStyle = .pageSheet
-                if let sheet = vc.sheetPresentationController {
-                    sheet.detents = [.custom { _ in
-                        return 180
-                    }]
-                    sheet.prefersGrabberVisible = true
-                }
-                self?.present(vc, animated: true)
+                self?.navigationController?.tabBarController?.selectedIndex = 2
             }
         })
         
@@ -194,5 +193,15 @@ extension CartViewController: CartTableViewCellDelegate {
         let cartItem: CartProduct = viewModel.cartProducts[index.row]
         
         viewModel.removeCartItem(cartItem)
+    }
+}
+
+extension CartViewController: AppleSignInDelegate {
+    func appleSignInDidComplete(user: FirebaseAuth.User) {
+        self.dismiss(animated: true)
+    }
+    
+    func appleSignInDidFail(error: any Error) {
+        debugPrint(error.localizedDescription)
     }
 }

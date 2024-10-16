@@ -9,7 +9,9 @@
 import Foundation
 import AuthenticationServices
 import FirebaseAuth
+import FirebaseFirestore
 import UIKit
+import CryptoKit
 
 public protocol AppleSignInDelegate: AnyObject {
     func appleSignInDidComplete(user: User)
@@ -26,15 +28,28 @@ public class AppleSignInManager: NSObject {
     
     public weak var delegate: AppleSignInDelegate?
     
+    private var currentNonce: String?
+    
     public func performAppleSignIn(from viewController: UIViewController) {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.fullName, .email]
         
+        if let nonce = randomNonceString() {
+            currentNonce = nonce
+            request.nonce = sha256(nonce)
+        }
+        
         let authController = ASAuthorizationController(authorizationRequests: [request])
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performRequests()
+    }
+    
+    private func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashed = SHA256.hash(data: inputData)
+        return hashed.compactMap { String(format: "%02x", $0) }.joined()
     }
 }
 
@@ -42,7 +57,7 @@ extension AppleSignInManager: ASAuthorizationControllerDelegate, ASAuthorization
     
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            guard let nonce = randomNonceString() else {
+            guard let nonce = currentNonce else {
                 delegate?.appleSignInDidFail(error: NSError(domain: "AppleSignIn", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid nonce"]))
                 return
             }
@@ -65,9 +80,16 @@ extension AppleSignInManager: ASAuthorizationControllerDelegate, ASAuthorization
                     self?.delegate?.appleSignInDidFail(error: error)
                     return
                 }
-                if let user = authResult?.user {
-                    self?.delegate?.appleSignInDidComplete(user: user)
+                guard let user = authResult?.user else {
+                    self?.delegate?.appleSignInDidFail(error: NSError(domain: "AppleSignIn", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to get user"]))
+                    return
                 }
+                
+                if authResult?.additionalUserInfo?.isNewUser == true {
+                    self?.saveAppleUserData(appleIDCredential: appleIDCredential, user: user)
+                }
+                
+                self?.delegate?.appleSignInDidComplete(user: user)
             }
         }
     }
@@ -80,13 +102,35 @@ extension AppleSignInManager: ASAuthorizationControllerDelegate, ASAuthorization
         return UIApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
     }
     
+    private func saveAppleUserData(appleIDCredential: ASAuthorizationAppleIDCredential, user: User) {
+        let db = Firestore.firestore()
+        
+        var userData: [String: Any] = [:]
+        
+        if let fullName = appleIDCredential.fullName {
+            let name = "\(fullName.givenName ?? "") \(fullName.familyName ?? "")"
+            userData["fullName"] = name
+        }
+        
+        if let email = appleIDCredential.email {
+            userData["email"] = email
+        }
+        db.collection("users").document(user.uid).setData(userData, merge: true) { error in
+            if let error = error {
+                print("Error saving user data: \(error.localizedDescription)")
+            } else {
+                print("User data successfully saved.")
+            }
+        }
+    }
+    
     private func randomNonceString(length: Int = 32) -> String? {
         precondition(length > 0)
         let charset: Array<Character> =
-            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
         var result = ""
         var remainingLength = length
-
+        
         while remainingLength > 0 {
             let randoms: [UInt8] = (0..<16).map { _ in
                 var random: UInt8 = 0
@@ -96,19 +140,19 @@ extension AppleSignInManager: ASAuthorizationControllerDelegate, ASAuthorization
                 }
                 return random
             }
-
+            
             for random in randoms {
                 if remainingLength == 0 {
                     break
                 }
-
+                
                 if random < charset.count {
                     result.append(charset[Int(random)])
                     remainingLength -= 1
                 }
             }
         }
-
+        
         return result
     }
 }

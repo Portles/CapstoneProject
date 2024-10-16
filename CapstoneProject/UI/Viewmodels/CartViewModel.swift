@@ -27,7 +27,7 @@ final class CartViewModel {
         getCartItems()
     }
     
-    private func getCartItems() {
+    func getCartItems() {
         performingSomething = true
         
         networkManager.fetchBasket { [weak self] result in
@@ -100,16 +100,54 @@ final class CartViewModel {
     
     func confirmPurchases() {
         if !rawCartProducts.isEmpty {
-            for rawCartProduct in rawCartProducts {
-                networkManager.removeFromCart(rawCartProduct.cartId) { [weak self] result in
-                    switch result {
-                    case .success(_):
-                        if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
-                            self?.getCartItems()
-                        }
-                    case .failure(let error):
-                        debugPrint(error.localizedDescription)
+            saveUserPurchases()
+        }
+    }
+    
+    private func saveUserPurchases() {
+        FirebaseManager.fetchCurrentUserData { [weak self] model, error in
+            guard error == nil else {
+                debugPrint(error?.localizedDescription ?? "Fetch user error")
+                return
+            }
+            
+            guard let model else {
+                debugPrint("Fetch user data error")
+                return
+            }
+            
+            self?.saveBuyHistory(userData: model)
+        }
+    }
+    
+    private func saveBuyHistory(userData: UserModel) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let dateString = dateFormatter.string(from: Date())
+        
+        let buyHistory = BuyHistory(id: userData.uid, buyerName: userData.fullName ?? "Unknown name", buyDate: dateString, buyyedProducts: cartProducts)
+        
+        FirebaseManager.saveBuyHistory(buyHistory) { [weak self] error in
+            guard error == nil else {
+                debugPrint(error?.localizedDescription ?? "save buy history error")
+                return
+            }
+            
+            debugPrint("Buyyed products saved successfully")
+            self?.clearCart()
+        }
+    }
+    
+    private func clearCart() {
+        for rawCartProduct in rawCartProducts {
+            networkManager.removeFromCart(rawCartProduct.cartId) { [weak self] result in
+                switch result {
+                case .success(_):
+                    if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
+                        self?.getCartItems()
                     }
+                case .failure(let error):
+                    debugPrint(error.localizedDescription)
                 }
             }
         }

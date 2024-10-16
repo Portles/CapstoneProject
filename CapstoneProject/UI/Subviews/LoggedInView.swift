@@ -12,7 +12,9 @@ protocol LoggedInViewDelegate: AnyObject {
     func logoutButtonTapped()
 }
 
-class LoggedInView: UIView {
+final class LoggedInView: UIView {
+    private var lastPurchases: [CartProduct]?
+    
     private let logoutButton: UIButton = {
         let button = UIButton()
         button.setTitle("Logout", for: .normal)
@@ -21,19 +23,19 @@ class LoggedInView: UIView {
         return button
     }()
     
-    private let nonceKeyLabel: UILabel = {
+    private let emailKeyLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.numberOfLines = 0
-        label.text = "Nonce Key:"
+        label.text = "Email:"
         label.font = .preferredFont(forTextStyle: .headline)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private let nonceLabel: UILabel = {
+    private let emailLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.numberOfLines = 0
         label.font = .preferredFont(forTextStyle: .subheadline)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +44,7 @@ class LoggedInView: UIView {
     
     private let nameKeyLabel: UILabel = {
        let label = UILabel()
-        label.textColor = .black
+        label.textColor = .label
         label.text = "Name:"
         label.font = .preferredFont(forTextStyle: .headline)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -51,16 +53,36 @@ class LoggedInView: UIView {
     
     private let nameLabel: UILabel = {
        let label = UILabel()
-        label.textColor = .black
-        label.font = .preferredFont(forTextStyle: .headline)
+        label.textColor = .label
+        label.font = .preferredFont(forTextStyle: .subheadline)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private let buyHistoryLabel: UILabel = {
+       let label = UILabel()
+        label.textColor = .label
+        label.text = "Latest Purchase"
+        label.font = .preferredFont(forTextStyle: .extraLargeTitle)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let tableView: UITableView = {
+       let tableView = UITableView()
+        tableView.register(LatestPurchasesTableViewCell.self, forCellReuseIdentifier: LatestPurchasesTableViewCell.identifier)
+        tableView.allowsSelection = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
     }()
     
     weak var delegate: LoggedInViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        tableView.delegate = self
+        tableView.dataSource = self
         
         let logoutButtonAction: UIAction = UIAction { [weak self] _ in
             if AppleSignInFirebaseAuth.shared.logOutUser() {
@@ -70,45 +92,92 @@ class LoggedInView: UIView {
         
         logoutButton.addAction(logoutButtonAction, for: .touchUpInside)
         
+        [logoutButton, emailLabel, emailKeyLabel, nameLabel, nameKeyLabel, buyHistoryLabel, tableView].forEach(addSubview)
         
-        [logoutButton, nonceLabel, nonceKeyLabel, nameLabel, nameKeyLabel].forEach(addSubview)
+        getLatestPurchase()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func configure(with user: User) {
-        nonceLabel.text = user.refreshToken
-        nameLabel.text = user.displayName
+    func configure(with user: UserModel) {
+        emailLabel.text = user.email
+        nameLabel.text = user.fullName
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        tableView.separatorStyle = .none
+        tableView.separatorColor = .clear
+        
         NSLayoutConstraint.activate([
-            logoutButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
-            logoutButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            logoutButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            logoutButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             logoutButton.widthAnchor.constraint(equalToConstant: 75),
             logoutButton.heightAnchor.constraint(equalToConstant: 16),
             
-            nonceKeyLabel.topAnchor.constraint(equalTo: logoutButton.bottomAnchor, constant: 10),
-            nonceKeyLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            nonceKeyLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            
-            nonceLabel.topAnchor.constraint(equalTo: nonceKeyLabel.bottomAnchor, constant: 10),
-            nonceLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            nonceLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            
-            nameKeyLabel.topAnchor.constraint(equalTo: nonceLabel.bottomAnchor, constant: 20),
+            nameKeyLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             nameKeyLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             nameKeyLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            nameKeyLabel.heightAnchor.constraint(equalToConstant: 36),
             
-            nameLabel.topAnchor.constraint(equalTo: nonceLabel.bottomAnchor, constant: 10),
+            nameLabel.topAnchor.constraint(equalTo: nameKeyLabel.bottomAnchor),
             nameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            nameLabel.heightAnchor.constraint(equalToConstant: 36)
+            
+            emailKeyLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 20),
+            emailKeyLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            emailKeyLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            emailLabel.topAnchor.constraint(equalTo: emailKeyLabel.bottomAnchor),
+            emailLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            emailLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            buyHistoryLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 20),
+            buyHistoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            buyHistoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            
+            tableView.topAnchor.constraint(equalTo: buyHistoryLabel.bottomAnchor, constant: 10),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    func getLatestPurchase() {
+        FirebaseManager.fetchBuyHistories { [weak self] model, error in
+            guard error == nil else {
+                debugPrint(error?.localizedDescription ?? "Fetch buy histories error")
+                return
+            }
+            
+            if let model {
+                self?.lastPurchases = model.buyyedProducts
+                self?.tableView.reloadData()
+            }
+        }
+    }
+}
+
+extension LoggedInView: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 146
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return lastPurchases?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let data = lastPurchases?[indexPath.row] {
+            let cell = tableView.dequeueReusableCell(withIdentifier: LatestPurchasesTableViewCell.identifier, for: indexPath) as! LatestPurchasesTableViewCell
+            
+            cell.configure(imageName: data.image, name: data.name, price: data.price, count: data.orderCount)
+            
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
 }

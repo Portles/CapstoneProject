@@ -5,7 +5,7 @@
 //  Created by Nizamet Özkan on 8.10.2024.
 //
 
-struct CartProduct: Decodable {
+struct CartProduct: Codable {
     let cartId: Int
     let name: String
     let image: String

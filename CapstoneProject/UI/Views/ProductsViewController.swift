@@ -24,6 +24,8 @@ final class ProductsViewController: UIViewController {
     }
     
     private func configureUIElements() {
+        view.backgroundColor = .secondarySystemBackground
+        
         let layout = UICollectionViewFlowLayout()
         
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)

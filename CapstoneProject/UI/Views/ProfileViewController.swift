@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseAuth
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     private let loginToSeeView: LoginToSeeView = {
        let view = LoginToSeeView()
         return view
@@ -34,6 +34,7 @@ class ProfileViewController: UIViewController {
     private func checkLoginStatus() {
         if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {
             setLoggedView()
+            loggedInView.getLatestPurchase()
         } else {
             setLogoutedView()
         }
@@ -41,9 +42,17 @@ class ProfileViewController: UIViewController {
     
     private func setLoggedView() {
         loggedInView.delegate = self
-        if let user: User = AppleSignInFirebaseAuth.shared.getCurrentUser() {
-            loggedInView.configure(with: user)
+        FirebaseManager.fetchCurrentUserData { [weak self] model, error in
+            guard error == nil else {
+                debugPrint(error?.localizedDescription ?? "Fetch user data error")
+                return
+            }
+            
+            if let model {
+                self?.loggedInView.configure(with: model)
+            }
         }
+        
         view.addSubview(loggedInView)
         loggedInView.frame = view.bounds
     }
