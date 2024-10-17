@@ -10,7 +10,7 @@ import Combine
 import FirebaseAuth
 import CapstoneProjectData
 
-final class CartViewController: UIViewController {
+final public class CartViewController: UIViewController {
     private let viewModel: CartViewModel = CartViewModel()
     
     private var cancellables: Set<AnyCancellable> = []
@@ -58,7 +58,7 @@ final class CartViewController: UIViewController {
         return button
     }()
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
@@ -73,7 +73,7 @@ final class CartViewController: UIViewController {
         view.addSubview(confirmPurchasesButton)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         viewModel.getCartItems()
@@ -135,7 +135,7 @@ final class CartViewController: UIViewController {
         }
     }
     
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         activityIndicator.center = view.center
@@ -168,15 +168,15 @@ final class CartViewController: UIViewController {
 }
 
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         146
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.cartProducts.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CartTableViewCell = tableView.dequeueReusableCell(withIdentifier: CartTableViewCell.identifier, for: indexPath) as! CartTableViewCell
         let cartItem: CartProduct = viewModel.cartProducts[indexPath.row]
         
@@ -198,11 +198,11 @@ extension CartViewController: CartTableViewCellDelegate {
 }
 
 extension CartViewController: AppleSignInDelegate {
-    func appleSignInDidComplete(user: FirebaseAuth.User) {
+    public func appleSignInDidComplete(user: FirebaseAuth.User) {
         self.dismiss(animated: true)
     }
     
-    func appleSignInDidFail(error: any Error) {
+    public func appleSignInDidFail(error: any Error) {
         debugPrint(error.localizedDescription)
     }
 }

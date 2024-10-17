@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		CA6F1EFD2CC13814000DFEF7 /* CapstoneProjectData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F1EFC2CC13814000DFEF7 /* CapstoneProjectData.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		CA6F1EFE2CC13814000DFEF7 /* CapstoneProjectData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F1EFC2CC13814000DFEF7 /* CapstoneProjectData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CA6F1F062CC138B1000DFEF7 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CA6F1F052CC138B1000DFEF7 /* FirebaseAuth */; };
-		CA6F1F082CC138B1000DFEF7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CA6F1F072CC138B1000DFEF7 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,8 +49,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA6F1EFD2CC13814000DFEF7 /* CapstoneProjectData.framework in Frameworks */,
-				CA6F1F062CC138B1000DFEF7 /* FirebaseAuth in Frameworks */,
-				CA6F1F082CC138B1000DFEF7 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,8 +114,6 @@
 			);
 			name = CapstoneProjectUI;
 			packageProductDependencies = (
-				CA6F1F052CC138B1000DFEF7 /* FirebaseAuth */,
-				CA6F1F072CC138B1000DFEF7 /* FirebaseFirestore */,
 			);
 			productName = CapstoneProjectUI;
 			productReference = CAC685E82CC0FEE700B0A2B0 /* CapstoneProjectUI.framework */;
@@ -150,7 +144,6 @@
 			mainGroup = CAC685DE2CC0FEE700B0A2B0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				CA6F1F042CC138B1000DFEF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CAC685E92CC0FEE700B0A2B0 /* Products */;
@@ -207,7 +200,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CapstoneProjectUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -246,7 +239,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CapstoneProjectUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -408,30 +401,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		CA6F1F042CC138B1000DFEF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.3.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		CA6F1F052CC138B1000DFEF7 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CA6F1F042CC138B1000DFEF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		CA6F1F072CC138B1000DFEF7 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CA6F1F042CC138B1000DFEF7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CAC685DF2CC0FEE700B0A2B0 /* Project object */;
 }

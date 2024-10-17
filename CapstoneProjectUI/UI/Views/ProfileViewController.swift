@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import CapstoneProjectData
 
-final class ProfileViewController: UIViewController {
+final public class ProfileViewController: UIViewController {
     private let viewModel: ProfileViewModel = ProfileViewModel()
     
     private let activityIndicator: UIActivityIndicatorView = {
@@ -30,7 +30,7 @@ final class ProfileViewController: UIViewController {
         return view
     }()
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
@@ -40,7 +40,7 @@ final class ProfileViewController: UIViewController {
         view.addSubview(activityIndicator)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         DispatchQueue.main.async { [weak self] in
             self?.viewModel.performingSomething = true
@@ -64,7 +64,7 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         activityIndicator.center = view.center
@@ -121,7 +121,7 @@ extension ProfileViewController: LoggedInViewDelegate {
 }
 
 extension ProfileViewController: AppleSignInDelegate {
-    func appleSignInDidComplete(user: FirebaseAuth.User) {
+    public func appleSignInDidComplete(user: FirebaseAuth.User) {
         DispatchQueue.main.async { [weak self] in
             self?.viewModel.performingSomething = true
         }
@@ -132,7 +132,7 @@ extension ProfileViewController: AppleSignInDelegate {
         }
     }
     
-    func appleSignInDidFail(error: any Error) {
+    public func appleSignInDidFail(error: any Error) {
         debugPrint(error.localizedDescription)
     }
 }

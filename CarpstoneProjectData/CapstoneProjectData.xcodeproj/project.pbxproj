@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CA4E134A2CC1487F004A93C8 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CA4E13492CC1487F004A93C8 /* FirebaseAuth */; };
-		CA4E134C2CC1487F004A93C8 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CA4E134B2CC1487F004A93C8 /* FirebaseFirestore */; };
+		CAC5004D2CC1971B00387C4F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CAC5004C2CC1971B00387C4F /* FirebaseAuth */; };
+		CAC5004F2CC1971B00387C4F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CAC5004E2CC1971B00387C4F /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,26 +28,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA4E134A2CC1487F004A93C8 /* FirebaseAuth in Frameworks */,
-				CA4E134C2CC1487F004A93C8 /* FirebaseFirestore in Frameworks */,
+				CAC5004D2CC1971B00387C4F /* FirebaseAuth in Frameworks */,
+				CAC5004F2CC1971B00387C4F /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CA4E12E42CC14366004A93C8 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		CA6F20232CC13D1A000DFEF7 = {
 			isa = PBXGroup;
 			children = (
 				CA6F206F2CC13D46000DFEF7 /* Data */,
-				CA4E12E42CC14366004A93C8 /* Frameworks */,
 				CA6F202E2CC13D1A000DFEF7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,8 +83,8 @@
 			);
 			name = CapstoneProjectData;
 			packageProductDependencies = (
-				CA4E13492CC1487F004A93C8 /* FirebaseAuth */,
-				CA4E134B2CC1487F004A93C8 /* FirebaseFirestore */,
+				CAC5004C2CC1971B00387C4F /* FirebaseAuth */,
+				CAC5004E2CC1971B00387C4F /* FirebaseFirestore */,
 			);
 			productName = CarpstoneProjectData;
 			productReference = CA6F202D2CC13D1A000DFEF7 /* CapstoneProjectData.framework */;
@@ -122,7 +114,7 @@
 			mainGroup = CA6F20232CC13D1A000DFEF7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				CA4E13482CC1487F004A93C8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CAC5004B2CC1971B00387C4F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA6F202E2CC13D1A000DFEF7 /* Products */;
@@ -179,7 +171,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CarpstoneProjectData;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -218,7 +210,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CarpstoneProjectData;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -382,25 +374,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CA4E13482CC1487F004A93C8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		CAC5004B2CC1971B00387C4F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
-				kind = upToNextMajorVersion;
+				kind = upToNextMinorVersion;
 				minimumVersion = 11.3.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CA4E13492CC1487F004A93C8 /* FirebaseAuth */ = {
+		CAC5004C2CC1971B00387C4F /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CA4E13482CC1487F004A93C8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = CAC5004B2CC1971B00387C4F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		CA4E134B2CC1487F004A93C8 /* FirebaseFirestore */ = {
+		CAC5004E2CC1971B00387C4F /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CA4E13482CC1487F004A93C8 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = CAC5004B2CC1971B00387C4F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */

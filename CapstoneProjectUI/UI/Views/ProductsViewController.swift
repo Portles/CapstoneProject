@@ -9,14 +9,18 @@ import UIKit
 import Combine
 import CapstoneProjectData
 
-final class ProductsViewController: UIViewController {
+final public class ProductsViewController: UIViewController {
     private let viewModel: ProductsViewModel = ProductsViewModel()
 
-    @IBOutlet weak var collectionView: UICollectionView!
+    private var collectionView: UICollectionView = {
+       let collectionView = UICollectionView()
+//        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: T##String)
+        return collectionView
+    }()
     
     private var cancellables: Set<AnyCancellable> = []
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         configureUIElements()
@@ -48,6 +52,8 @@ final class ProductsViewController: UIViewController {
         collectionView.dropDelegate = self
         
         collectionView.dragInteractionEnabled = true
+        
+        view.addSubview(collectionView)
     }
     
     private func bindViewModel() {
@@ -84,14 +90,25 @@ final class ProductsViewController: UIViewController {
         viewController.modalPresentationStyle = .fullScreen
         present(viewController, animated: true)
     }
+    
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
+    }
 }
 
 extension ProductsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.products.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let product: Product = viewModel.products[indexPath.row]
         
         let cell: ProductCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCollectionViewCell", for: indexPath) as! ProductCollectionViewCell
@@ -101,7 +118,7 @@ extension ProductsViewController: UICollectionViewDelegate, UICollectionViewData
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let product: Product = viewModel.products[indexPath.row]
         
         let viewController: ProductDetailViewController = ProductDetailViewController(product: product)
@@ -113,7 +130,7 @@ extension ProductsViewController: UICollectionViewDelegate, UICollectionViewData
 }
 
 extension ProductsViewController: UICollectionViewDragDelegate {
-    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+    public func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         let product = viewModel.products[indexPath.row]
         let itemProvider = NSItemProvider(object: product.name as NSString)
         let dragItem = UIDragItem(itemProvider: itemProvider)
@@ -123,14 +140,14 @@ extension ProductsViewController: UICollectionViewDragDelegate {
 }
 
 extension ProductsViewController: UICollectionViewDropDelegate {
-    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: any UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+    public func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: any UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
         if collectionView.hasActiveDrag {
             return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
         }
         return UICollectionViewDropProposal(operation: .forbidden)
     }
     
-    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+    public func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
         guard let destinationIndexPath = coordinator.destinationIndexPath else { return }
         
         for item in coordinator.items {
