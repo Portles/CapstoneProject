@@ -13,8 +13,23 @@ final public class ProductsViewController: UIViewController {
     private let viewModel: ProductsViewModel = ProductsViewModel()
 
     private var collectionView: UICollectionView = {
-       let collectionView = UICollectionView()
-//        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: T##String)
+        
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 10
+        
+        let screenSize = (UIScreen.main.bounds.width - 30) / 2
+        
+        let itemSize = CGSize(width: screenSize, height: screenSize * 1.2)
+        
+        layout.itemSize = itemSize
+        
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.register(ProductCollectionViewCell.self, forCellWithReuseIdentifier: ProductCollectionViewCell.identifier)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
@@ -30,20 +45,6 @@ final public class ProductsViewController: UIViewController {
     
     private func configureUIElements() {
         view.backgroundColor = .secondarySystemBackground
-        
-        let layout = UICollectionViewFlowLayout()
-        
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        
-        let screenSize = (view.width - 30) / 2
-        
-        let itemSize = CGSize(width: screenSize, height: screenSize * 1.2)
-        
-        layout.itemSize = itemSize
-        
-        collectionView.collectionViewLayout = layout
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -111,7 +112,7 @@ extension ProductsViewController: UICollectionViewDelegate, UICollectionViewData
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let product: Product = viewModel.products[indexPath.row]
         
-        let cell: ProductCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCollectionViewCell", for: indexPath) as! ProductCollectionViewCell
+        let cell: ProductCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath) as! ProductCollectionViewCell
         
         cell.configure(name: product.name, price: product.price, imageName: product.image)
         

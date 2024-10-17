@@ -14,6 +14,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     private let cellView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = .systemBackground
+        view.layer.cornerRadius = 10
         view.layer.opacity = 0.9
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -21,21 +22,21 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView: UIImageView = UIImageView()
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     private let labelName: UILabel = {
         let label: UILabel = UILabel()
-        
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 24, weight: .heavy)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let labelPrice: UILabel = {
         let label: UILabel = UILabel()
-        
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -65,22 +66,22 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-            cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 5),
+            cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
             cellView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             cellView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 5),
             
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 10),
+            imageView.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 20),
+            imageView.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -20),
             imageView.heightAnchor.constraint(equalToConstant: 120),
             
             labelName.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
-            labelName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            labelName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),
+            labelName.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 10),
+            labelName.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -10),
             
-            labelPrice.bottomAnchor.constraint(equalTo: cellView.bottomAnchor, constant: 10),
-            labelPrice.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            labelPrice.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),
+            labelPrice.bottomAnchor.constraint(equalTo: cellView.bottomAnchor, constant: -10),
+            labelPrice.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 10),
+            labelPrice.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -10),
         ])
     }
     
