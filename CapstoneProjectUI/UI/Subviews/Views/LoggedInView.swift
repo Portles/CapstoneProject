@@ -153,7 +153,7 @@ final class LoggedInView: UIView {
             tableView.topAnchor.constraint(equalTo: buyHistoryLabel.bottomAnchor, constant: 10),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
             noLatestPurchaseview.topAnchor.constraint(equalTo: buyHistoryLabel.bottomAnchor, constant: 10),
             noLatestPurchaseview.leadingAnchor.constraint(equalTo: leadingAnchor),
