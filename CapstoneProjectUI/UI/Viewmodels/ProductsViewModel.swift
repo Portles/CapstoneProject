@@ -10,11 +10,12 @@ import Combine
 import CapstoneProjectData
 
 final class ProductsViewModel {
-    private let networkManager: NetworkManager = NetworkManager()
+    private let networkManager: NetworkManagerProtocol
     
     @Published private(set) var products: [Product] = []
     
-    init() {
+    init(networkManager: NetworkManagerProtocol = NetworkManager()) {
+        self.networkManager = networkManager
         getProducts()
     }
     
@@ -22,9 +23,7 @@ final class ProductsViewModel {
         networkManager.fetchProducts { result in
             switch result {
             case .success(let products):
-                DispatchQueue.main.async { [weak self] in
-                    self?.products = products
-                }
+                self.products = products
             case .failure:
                 break
             }

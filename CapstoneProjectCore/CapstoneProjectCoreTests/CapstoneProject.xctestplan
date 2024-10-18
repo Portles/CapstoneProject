@@ -1,0 +1,54 @@
+{
+  "configurations" : [
+    {
+      "id" : "9468319E-2123-440C-B3F3-B14140DCDB9E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:CapstoneProjectCore.xcodeproj",
+          "identifier" : "CAD3CD3B2CB286A30014D20B",
+          "name" : "CapstoneProjectCore"
+        },
+        {
+          "containerPath" : "container:..\/CarpstoneProjectData\/CapstoneProjectData.xcodeproj",
+          "identifier" : "CA6F202C2CC13D1A000DFEF7",
+          "name" : "CapstoneProjectData"
+        },
+        {
+          "containerPath" : "container:..\/CapstoneProjectUI\/CapstoneProjectUI.xcodeproj",
+          "identifier" : "CAC685E72CC0FEE700B0A2B0",
+          "name" : "CapstoneProjectUI"
+        }
+      ]
+    },
+    "environmentVariableEntries" : [
+      {
+        "key" : "CORESVG_VERBOSE",
+        "value" : "1"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:CapstoneProjectCore.xcodeproj",
+      "identifier" : "CAD3CD3B2CB286A30014D20B",
+      "name" : "CapstoneProjectCore"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:CapstoneProjectCore.xcodeproj",
+        "identifier" : "CA4D092F2CC30353002CF15D",
+        "name" : "CapstoneProjectCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

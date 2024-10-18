@@ -10,7 +10,7 @@ import Combine
 import CapstoneProjectData
 
 final class CartViewModel {
-    private let networkManager: NetworkManager = NetworkManager()
+    private let networkManager: NetworkManagerProtocol
     
     var performingSomething: Bool = false {
         didSet {
@@ -24,7 +24,8 @@ final class CartViewModel {
     
     private var rawCartProducts: [CartProduct] = []
     
-    init() {
+    init(networkManager: NetworkManagerProtocol = NetworkManager()) {
+        self.networkManager = networkManager
         getCartItems()
     }
     
