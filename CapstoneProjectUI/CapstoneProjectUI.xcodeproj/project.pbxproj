@@ -13,6 +13,16 @@
 		CA6F1EFE2CC13814000DFEF7 /* CapstoneProjectData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA6F1EFC2CC13814000DFEF7 /* CapstoneProjectData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		CAC5014D2CC1B8D900387C4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CAC685DF2CC0FEE700B0A2B0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAC5013E2CC1B5C300387C4F;
+			remoteInfo = CapstoneProjectUIResources;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		CAC6874D2CC1051900B0A2B0 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -29,13 +39,40 @@
 
 /* Begin PBXFileReference section */
 		CA6F1EFC2CC13814000DFEF7 /* CapstoneProjectData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CapstoneProjectData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAC5013F2CC1B5C300387C4F /* CapstoneProjectUIResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CapstoneProjectUIResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAC685E82CC0FEE700B0A2B0 /* CapstoneProjectUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CapstoneProjectUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CAC501452CC1B5D400387C4F /* Exceptions for "Resources" folder in "CapstoneProjectUIResources" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = CAC5013E2CC1B5C300387C4F /* CapstoneProjectUIResources */;
+		};
+		CAC5014B2CC1B71600387C4F /* Exceptions for "Resources" folder in "CapstoneProjectUI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = CAC685E72CC0FEE700B0A2B0 /* CapstoneProjectUI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CA6F1FBB2CC13C2A000DFEF7 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAC5014B2CC1B71600387C4F /* Exceptions for "Resources" folder in "CapstoneProjectUI" target */,
+				CAC501452CC1B5D400387C4F /* Exceptions for "Resources" folder in "CapstoneProjectUIResources" target */,
+			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		CAC501492CC1B6A400387C4F /* ResourceHelper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ResourceHelper;
 			sourceTree = "<group>";
 		};
 		CAC686482CC0FEFF00B0A2B0 /* UI */ = {
@@ -46,6 +83,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CAC5013C2CC1B5C300387C4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CAC685E52CC0FEE700B0A2B0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -62,6 +106,7 @@
 		CAC685DE2CC0FEE700B0A2B0 = {
 			isa = PBXGroup;
 			children = (
+				CAC501492CC1B6A400387C4F /* ResourceHelper */,
 				CA6F1FBB2CC13C2A000DFEF7 /* Resources */,
 				CAC686482CC0FEFF00B0A2B0 /* UI */,
 				CAC6872F2CC1008100B0A2B0 /* Frameworks */,
@@ -73,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				CAC685E82CC0FEE700B0A2B0 /* CapstoneProjectUI.framework */,
+				CAC5013F2CC1B5C300387C4F /* CapstoneProjectUIResources.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +144,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		CAC5013E2CC1B5C300387C4F /* CapstoneProjectUIResources */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAC501422CC1B5C300387C4F /* Build configuration list for PBXNativeTarget "CapstoneProjectUIResources" */;
+			buildPhases = (
+				CAC5013B2CC1B5C300387C4F /* Sources */,
+				CAC5013C2CC1B5C300387C4F /* Frameworks */,
+				CAC5013D2CC1B5C300387C4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CapstoneProjectUIResources;
+			packageProductDependencies = (
+			);
+			productName = CapstoneProjectUIResources;
+			productReference = CAC5013F2CC1B5C300387C4F /* CapstoneProjectUIResources.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		CAC685E72CC0FEE700B0A2B0 /* CapstoneProjectUI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CAC685F92CC0FEE700B0A2B0 /* Build configuration list for PBXNativeTarget "CapstoneProjectUI" */;
@@ -111,9 +176,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				CAC5014E2CC1B8D900387C4F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CA6F1FBB2CC13C2A000DFEF7 /* Resources */,
+				CAC501492CC1B6A400387C4F /* ResourceHelper */,
 				CAC686482CC0FEFF00B0A2B0 /* UI */,
 			);
 			name = CapstoneProjectUI;
@@ -135,6 +202,9 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					CAC5013E2CC1B5C300387C4F = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					CAC685E72CC0FEE700B0A2B0 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -158,11 +228,19 @@
 			projectRoot = "";
 			targets = (
 				CAC685E72CC0FEE700B0A2B0 /* CapstoneProjectUI */,
+				CAC5013E2CC1B5C300387C4F /* CapstoneProjectUIResources */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		CAC5013D2CC1B5C300387C4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CAC685E62CC0FEE700B0A2B0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -173,6 +251,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CAC5013B2CC1B5C300387C4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CAC685E42CC0FEE700B0A2B0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -182,7 +267,73 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		CAC5014E2CC1B8D900387C4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAC5013E2CC1B5C300387C4F /* CapstoneProjectUIResources */;
+			targetProxy = CAC5014D2CC1B8D900387C4F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		CAC501402CC1B5C300387C4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AAG6CZ7HRY;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = "";
+				INSTALL_PATH = "";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CapstoneProjectUIResources;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		CAC501412CC1B5C300387C4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AAG6CZ7HRY;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = "";
+				INSTALL_PATH = "";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nizo.CapstoneProjectUIResources;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		CAC685FA2CC0FEE700B0A2B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -389,6 +540,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CAC501422CC1B5C300387C4F /* Build configuration list for PBXNativeTarget "CapstoneProjectUIResources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAC501402CC1B5C300387C4F /* Debug */,
+				CAC501412CC1B5C300387C4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CAC685E22CC0FEE700B0A2B0 /* Build configuration list for PBXProject "CapstoneProjectUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

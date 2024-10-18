@@ -7,28 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA1195532CC2452800F53805 /* CapstoneProjectUIResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CA11954F2CC2428E00F53805 /* CapstoneProjectUIResources.bundle */; };
+		CA1195552CC2453F00F53805 /* CapstoneProjectUIResources.bundle in Dependencies */ = {isa = PBXBuildFile; fileRef = CA11954F2CC2428E00F53805 /* CapstoneProjectUIResources.bundle */; };
 		CAC501322CC19AD100387C4F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAC501312CC19AD100387C4F /* FirebaseCore */; };
 		CAC501362CC19FCA00387C4F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CAC501352CC19FCA00387C4F /* FirebaseAuth */; };
 		CAC501382CC19FCE00387C4F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CAC501372CC19FCE00387C4F /* FirebaseFirestore */; };
 		CAC6872C2CC1007000B0A2B0 /* CapstoneProjectUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC6872B2CC1007000B0A2B0 /* CapstoneProjectUI.framework */; };
-		CAC6872D2CC1007000B0A2B0 /* CapstoneProjectUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAC6872B2CC1007000B0A2B0 /* CapstoneProjectUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CAC6872E2CC1007000B0A2B0 /* Embed Frameworks */ = {
+		CA1195542CC2453100F53805 /* Dependencies */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 8;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 16;
 			files = (
-				CAC6872D2CC1007000B0A2B0 /* CapstoneProjectUI.framework in Embed Frameworks */,
+				CA1195552CC2453F00F53805 /* CapstoneProjectUIResources.bundle in Dependencies */,
 			);
-			name = "Embed Frameworks";
+			name = Dependencies;
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA11954F2CC2428E00F53805 /* CapstoneProjectUIResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = CapstoneProjectUIResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAC6872B2CC1007000B0A2B0 /* CapstoneProjectUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CapstoneProjectUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAD3CD3C2CB286A30014D20B /* CapstoneProjectCore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CapstoneProjectCore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -89,6 +91,7 @@
 		CAF66D112CBE79510007E387 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CA11954F2CC2428E00F53805 /* CapstoneProjectUIResources.bundle */,
 				CAC6872B2CC1007000B0A2B0 /* CapstoneProjectUI.framework */,
 			);
 			name = Frameworks;
@@ -104,7 +107,7 @@
 				CAD3CD382CB286A30014D20B /* Sources */,
 				CAD3CD392CB286A30014D20B /* Frameworks */,
 				CAD3CD3A2CB286A30014D20B /* Resources */,
-				CAC6872E2CC1007000B0A2B0 /* Embed Frameworks */,
+				CA1195542CC2453100F53805 /* Dependencies */,
 			);
 			buildRules = (
 			);
@@ -165,6 +168,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA1195532CC2452800F53805 /* CapstoneProjectUIResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,7 +17,7 @@ final class BuyView: UIView {
     
     private let increamentButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage.arrowUpwardAltArrowUpwardAltSymbol.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
+        button.setImage(CapstoneProjectUIResourcesAsset.upwardAlt.image.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
         button.tintColor = .white
         button.backgroundColor = .orange
         button.layer.cornerRadius = 25
@@ -35,7 +35,7 @@ final class BuyView: UIView {
     
     private let decreamentButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage.arrowUpwardAltArrowUpwardAltSymbol.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
+        button.setImage(CapstoneProjectUIResourcesAsset.upwardAlt.image.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
         button.transform = button.transform.rotated(by: .pi)
         button.isEnabled = false
         button.tintColor = .white
@@ -102,18 +102,18 @@ final class BuyView: UIView {
     
     @objc private func buttonPressed(_ sender: UIButton) {
         UIView.transition(with: sender, duration: 0.3, options: .transitionCrossDissolve, animations: {
-            sender.setImage(UIImage.arrowUploadProgressArrowUploadProgressSymbol.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
+            sender.setImage(CapstoneProjectUIResourcesAsset.uploadProgress.image.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
         }, completion: nil)
     }
     
     @objc private func buttonReleased(_ sender: UIButton) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             UIView.transition(with: sender, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                sender.setImage(UIImage.arrowUploadReadyArrowUploadReadySymbol.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
+                sender.setImage(CapstoneProjectUIResourcesAsset.uploadReady.image.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
             }, completion: { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     UIView.transition(with: sender, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                        sender.setImage(UIImage.arrowUpwardAltArrowUpwardAltSymbol.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
+                        sender.setImage(CapstoneProjectUIResourcesAsset.upwardAlt.image.applyingSymbolConfiguration(.init(font: .preferredFont(forTextStyle: .title1))), for: .normal)
                     }, completion: nil)
                 }
             })
