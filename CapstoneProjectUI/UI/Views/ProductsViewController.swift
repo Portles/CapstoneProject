@@ -11,6 +11,13 @@ import CapstoneProjectData
 
 final public class ProductsViewController: UIViewController {
     private let viewModel: ProductsViewModel = ProductsViewModel()
+    
+    private let collectionViewSegmentControl: UISegmentedControl = {
+        let items = ["Small", "Large"]
+        let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.selectedSegmentIndex = 0
+        return segmentedControl
+    }()
 
     private var collectionView: UICollectionView = {
         
@@ -46,6 +53,10 @@ final public class ProductsViewController: UIViewController {
     private func configureUIElements() {
         view.backgroundColor = .secondarySystemBackground
         
+        collectionViewSegmentControl.addTarget(self, action: #selector(didSegmentValueChanged(_:)), for: .valueChanged)
+        let segmentItem = UIBarButtonItem(customView: collectionViewSegmentControl)
+        navigationItem.rightBarButtonItem = segmentItem
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -66,7 +77,7 @@ final public class ProductsViewController: UIViewController {
             .store(in: &cancellables)
     }
     
-    @IBAction func didSegmentValueChanged(_ sender: UISegmentedControl) {
+    @objc func didSegmentValueChanged(_ sender: UISegmentedControl) {
         let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         var newSize: CGSize
         let screenSize = (view.width - 30) / 2

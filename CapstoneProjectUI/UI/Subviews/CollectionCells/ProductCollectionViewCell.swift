@@ -36,6 +36,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     
     private let labelPrice: UILabel = {
         let label: UILabel = UILabel()
+        label.textColor = .systemOrange
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -71,8 +72,8 @@ final class ProductCollectionViewCell: UICollectionViewCell {
             cellView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 5),
             
             imageView.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 10),
-            imageView.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 20),
-            imageView.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -20),
+            imageView.centerXAnchor.constraint(equalTo: cellView.centerXAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 120),
             imageView.heightAnchor.constraint(equalToConstant: 120),
             
             labelName.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
