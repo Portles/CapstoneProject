@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:CarpstoneProjectData/CapstoneProjectData.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:CapstoneProjectUI/CapstoneProjectUI.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:CapstoneProjectCore/CapstoneProjectCore.xcodeproj">
+   </FileRef>
+</Workspace>
