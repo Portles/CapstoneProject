@@ -10,4 +10,7 @@
    <FileRef
       location = "group:CapstoneProjectCore/CapstoneProjectCore.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:CapstoneProjectCore/CapstoneProjectCoreTests/CapstoneProject.xctestplan">
+   </FileRef>
 </Workspace>

@@ -9,7 +9,7 @@ import Foundation
 import CapstoneProjectData
 
 final class ProductDetailViewModel {
-    private let networkManager: NetworkManager = NetworkManager()
+    private let networkManager: NetworkManagerProtocol
     
     var performingSomething: Bool = false {
         didSet {
@@ -17,6 +17,11 @@ final class ProductDetailViewModel {
                 NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
             }
         }
+    }
+    
+    init(performingSomething: Bool = false, networkManager: NetworkManagerProtocol = NetworkManager()) {
+        self.networkManager = networkManager
+        self.performingSomething = performingSomething
     }
     
     func addToBasket(product: Product, orderCount: Int) {

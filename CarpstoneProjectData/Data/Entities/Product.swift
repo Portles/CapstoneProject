@@ -5,7 +5,7 @@
 //  Created by Nizamet Özkan on 6.10.2024.
 //
 
-public struct Product: Decodable {
+public struct Product: Decodable, Equatable {
     let id: Int
     public let name: String
     public let image: String

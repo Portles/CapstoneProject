@@ -15,6 +15,17 @@ public struct CartProduct: Codable {
     public var orderCount: Int
     private let username: String
     
+    public init(cartId: Int, name: String, image: String, category: String, price: Int, brand: String, orderCount: Int) {
+        self.cartId = cartId
+        self.name = name
+        self.image = image
+        self.category = category
+        self.price = price
+        self.brand = brand
+        self.orderCount = orderCount
+        self.username = "nizamet_ozkan"
+    }
+    
     enum CodingKeys: String, CodingKey {
         case cartId = "sepetId"
         case name = "ad"

@@ -7,8 +7,15 @@
 
 import Foundation.NSURL
 
-final public class NetworkManager {
-    
+public protocol NetworkManagerProtocol {
+    func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void)
+    static func fetchImages(imageEndpoint: String, _ completion: @escaping (Result<Data, NetworkError>) -> Void)
+    func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
+    func fetchBasket(_ completion: @escaping (Result<[CartProduct], NetworkError>) -> Void)
+    func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
+}
+
+final public class NetworkManager: NetworkManagerProtocol {
     private let decoder: JSONDecoder = {
         let decoder: JSONDecoder = JSONDecoder()
         decoder.keyDecodingStrategy = .useDefaultKeys
@@ -17,9 +24,9 @@ final public class NetworkManager {
     
     public init() { }
     
-    public func fetchProducts(_ result: @escaping (Result<[Product], NetworkError>) -> Void) {
+    public func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void) {
         guard let url = URL(string: URLEndpoints.fetchProducts.rawValue) else {
-            result(.failure(.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -27,23 +34,23 @@ final public class NetworkManager {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data else {
-                result(.failure(.invalidResponse))
+                completion(.failure(.invalidResponse))
                 return
             }
             
             do {
                 let productResponse: ProductResponse = try self.decoder.decode(ProductResponse.self, from: data)
-                result(.success(productResponse.products))
+                completion(.success(productResponse.products))
             } catch {
                 debugPrint(error.localizedDescription)
-                result(.failure(.invalidData))
+                completion(.failure(.invalidData))
             }
         }.resume()
     }
     
-    public static func fetchImages(imageEndpoint: String, _ result: @escaping (Result<Data, NetworkError>) -> Void) -> Void {
+    public static func fetchImages(imageEndpoint: String, _ completion: @escaping (Result<Data, NetworkError>) -> Void) -> Void {
         guard let url = URL(string: "\(URLEndpoints.fetchImages.rawValue)\(imageEndpoint)") else {
-            result(.failure(.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -51,19 +58,19 @@ final public class NetworkManager {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data else {
-                result(.failure(.invalidResponse))
+                completion(.failure(.invalidResponse))
                 return
             }
             
-            result(.success(data))
+            completion(.success(data))
             
         }.resume()
     }
     
     // Here is some response maybe will be added later
-    public func addToBasket(product: ProductRequest, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+    public func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let url = URL(string: URLEndpoints.addToBasket.rawValue) else {
-            result(.failure(.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -73,22 +80,22 @@ final public class NetworkManager {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard response != nil else {
-                result(.failure(.invalidResponse))
+                completion(.failure(.invalidResponse))
                 return
             }
             
             guard data != nil else {
-                result(.failure(.invalidData))
+                completion(.failure(.invalidData))
                 return
             }
             
-            result(.success(true))
+            completion(.success(true))
         }.resume()
     }
     
-    public func fetchBasket(_ result: @escaping (Result<[CartProduct], NetworkError>) -> Void) {
+    public func fetchBasket(_ completion: @escaping (Result<[CartProduct], NetworkError>) -> Void) {
         guard let url = URL(string: URLEndpoints.fectBasket.rawValue) else {
-            result(.failure(.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -98,23 +105,23 @@ final public class NetworkManager {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data else {
-                result(.failure(.invalidResponse))
+                completion(.failure(.invalidResponse))
                 return
             }
             
             do {
                 let productResponse: CartProductResponse = try self.decoder.decode(CartProductResponse.self, from: data)
-                result(.success(productResponse.products))
+                completion(.success(productResponse.products))
             } catch {
                 debugPrint(error.localizedDescription)
-                result(.success([]))
+                completion(.success([]))
             }
         }.resume()
     }
     
-    public func removeFromCart(_ cartId: Int, _ result: @escaping (Result<Bool, NetworkError>) -> Void) {
+    public func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let url = URL(string: URLEndpoints.removeFromBasket.rawValue) else {
-            result(.failure(.invalidURL))
+            completion(.failure(.invalidURL))
             return
         }
         
@@ -125,21 +132,21 @@ final public class NetworkManager {
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard error != nil else {
                 debugPrint(error?.localizedDescription ?? "weird error")
-                result(.success(false))
+                completion(.success(false))
                 return
             }
             
             guard response != nil else {
-                result(.failure(.invalidResponse))
+                completion(.failure(.invalidResponse))
                 return
             }
             
             guard data != nil else {
-                result(.failure(.invalidData))
+                completion(.failure(.invalidData))
                 return
             }
             
-            result(.success(true))
+            completion(.success(true))
         }.resume()
     }
 }

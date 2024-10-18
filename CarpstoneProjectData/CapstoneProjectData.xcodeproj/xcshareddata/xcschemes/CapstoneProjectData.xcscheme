@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CAD3CD3B2CB286A30014D20B"
-               BuildableName = "CapstoneProjectCore.app"
-               BlueprintName = "CapstoneProjectCore"
-               ReferencedContainer = "container:CapstoneProjectCore.xcodeproj">
+               BlueprintIdentifier = "CA6F202C2CC13D1A000DFEF7"
+               BuildableName = "CapstoneProjectData.framework"
+               BlueprintName = "CapstoneProjectData"
+               ReferencedContainer = "container:CapstoneProjectData.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,23 +27,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:CapstoneProjectCoreTests/CapstoneProject.xctestplan"
-            default = "YES">
-         </TestPlanReference>
-      </TestPlans>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
             skipped = "NO"
-            parallelizable = "NO">
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CA4D092F2CC30353002CF15D"
-               BuildableName = "CapstoneProjectCoreTests.xctest"
-               BlueprintName = "CapstoneProjectCoreTests"
-               ReferencedContainer = "container:CapstoneProjectCore.xcodeproj">
+               BlueprintIdentifier = "CAA8FB272CC27F07005E778B"
+               BuildableName = "CapstoneProjectDataUnitTests.xctest"
+               BlueprintName = "CapstoneProjectDataUnitTests"
+               ReferencedContainer = "container:CapstoneProjectData.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -58,23 +53,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CAD3CD3B2CB286A30014D20B"
-            BuildableName = "CapstoneProjectCore.app"
-            BlueprintName = "CapstoneProjectCore"
-            ReferencedContainer = "container:CapstoneProjectCore.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "CORESVG_VERBOSE"
-            value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -82,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CAD3CD3B2CB286A30014D20B"
-            BuildableName = "CapstoneProjectCore.app"
-            BlueprintName = "CapstoneProjectCore"
-            ReferencedContainer = "container:CapstoneProjectCore.xcodeproj">
+            BlueprintIdentifier = "CA6F202C2CC13D1A000DFEF7"
+            BuildableName = "CapstoneProjectData.framework"
+            BlueprintName = "CapstoneProjectData"
+            ReferencedContainer = "container:CapstoneProjectData.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
