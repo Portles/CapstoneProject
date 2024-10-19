@@ -66,11 +66,6 @@ final public class CartViewController: UIViewController {
         bindViewModel()
         
         configureUIElements()
-        
-        view.addSubview(tableView)
-        view.addSubview(totalPriceLabel)
-        view.addSubview(totalPriceValueLabel)
-        view.addSubview(confirmPurchasesButton)
     }
     
     override public func viewDidAppear(_ animated: Bool) {
@@ -121,6 +116,10 @@ final public class CartViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
         
         view.addSubview(activityIndicator)
+        view.addSubview(tableView)
+        view.addSubview(totalPriceLabel)
+        view.addSubview(totalPriceValueLabel)
+        view.addSubview(confirmPurchasesButton)
     }
     
     @objc private func performingSomethingChanged() {
@@ -194,15 +193,5 @@ extension CartViewController: CartTableViewCellDelegate {
         let cartItem: CartProduct = viewModel.cartProducts[index.row]
         
         viewModel.removeCartItem(cartItem)
-    }
-}
-
-extension CartViewController: AppleSignInDelegate {
-    public func appleSignInDidComplete(user: FirebaseAuth.User) {
-        self.dismiss(animated: true)
-    }
-    
-    public func appleSignInDidFail(error: any Error) {
-        debugPrint(error.localizedDescription)
     }
 }

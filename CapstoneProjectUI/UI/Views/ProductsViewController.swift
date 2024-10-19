@@ -134,9 +134,7 @@ extension ProductsViewController: UICollectionViewDelegate, UICollectionViewData
         let product: Product = viewModel.products[indexPath.row]
         
         let viewController: ProductDetailViewController = ProductDetailViewController(product: product)
-        
         viewController.modalPresentationStyle = .fullScreen
-        
         present(viewController, animated: true, completion: nil)
     }
 }

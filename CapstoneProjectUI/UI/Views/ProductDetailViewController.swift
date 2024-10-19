@@ -7,6 +7,7 @@
 
 import UIKit
 import CapstoneProjectData
+import Combine
 
 final class ProductDetailViewController: UIViewController {
     private let viewModel: ProductDetailViewModel = ProductDetailViewModel()
@@ -38,7 +39,7 @@ final class ProductDetailViewController: UIViewController {
         return button
     }()
     
-    private let imageView: UIImageView = {
+    private var imageView: UIImageView = {
         let imageView = UIImageView()
         
         return imageView
@@ -56,6 +57,8 @@ final class ProductDetailViewController: UIViewController {
         return stepper
     }()
     
+    private var cancellables: Set<AnyCancellable> = []
+    
     init(product: Product) {
         self.product = product
         super.init(nibName: nil ,bundle: nil)
@@ -68,33 +71,17 @@ final class ProductDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
+        bindViewModel()
         
         configureUIElement()
-        
-        view.addSubview(activityIndicator)
-        
-        view.addSubview(labelTitle)
-        view.addSubview(dismissButton)
-        view.addSubview(imageView)
-        view.addSubview(labelName)
-        view.addSubview(buyView)
     }
     
     private func configureUIElement() {
+        view.backgroundColor = .systemBackground
+        
         labelName.text = product.name
-        NetworkManager.fetchImages(imageEndpoint: product.image, { result in
-            switch result {
-            case .success(let imageData):
-                if let image = UIImage(data: imageData) {
-                    DispatchQueue.main.async {
-                        self.imageView.image = image
-                    }
-                }
-            case .failure(let error):
-                print(error)
-            }
-        })
+        
+        viewModel.getImage(imageEndpoint: product.image)
         
         let buttonAction: UIAction = UIAction(handler: { [weak self] _ in
             if let product = self?.product, let counter = self?.buyView.counter {
@@ -111,6 +98,22 @@ final class ProductDetailViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
         
+        view.addSubview(activityIndicator)
+        view.addSubview(labelTitle)
+        view.addSubview(dismissButton)
+        view.addSubview(imageView)
+        view.addSubview(labelName)
+        view.addSubview(buyView)
+        
+    }
+    
+    private func bindViewModel() {
+        viewModel.$imageData
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] data in
+                self?.imageView.image = UIImage(data: data)
+            }
+            .store(in: &cancellables)
     }
     
     @objc private func performingSomethingChanged() {

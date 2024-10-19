@@ -7,9 +7,12 @@
 
 import Foundation
 import CapstoneProjectData
+import Combine
 
 final class ProductDetailViewModel {
     private let networkManager: NetworkManagerProtocol
+    
+    @Published private(set) var imageData: Data = Data()
     
     var performingSomething: Bool = false {
         didSet {
@@ -45,5 +48,16 @@ final class ProductDetailViewModel {
                 print("Failed to add to basket")
             }
         }
+    }
+    
+    func getImage(imageEndpoint: String) {
+        NetworkManager.fetchImages(imageEndpoint: imageEndpoint, { [weak self] result in
+            switch result {
+            case .success(let imageData):
+                self?.imageData = imageData
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
 }

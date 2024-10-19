@@ -20,19 +20,17 @@ final public class ProfileViewController: UIViewController {
         return activityIndicator
     }()
     
-    private let loginToSeeView: LoginToSeeView = {
-        let view = LoginToSeeView()
-        return view
-    }()
+    private let loginToSeeView: LoginToSeeView = LoginToSeeView()
     
-    private let loggedInView: LoggedInView = {
-        let view = LoggedInView()
-        return view
-    }()
+    private let loggedInView: LoggedInView = LoggedInView()
     
     override public func viewDidLoad() {
         super.viewDidLoad()
         
+        configureUI()
+    }
+    
+    private func configureUI() {
         view.backgroundColor = .systemBackground
         
         NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)

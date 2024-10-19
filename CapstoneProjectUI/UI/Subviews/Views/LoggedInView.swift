@@ -114,8 +114,10 @@ final class LoggedInView: UIView {
     }
     
     func configure(with user: UserModel) {
-        emailLabel.text = user.email
-        nameLabel.text = user.fullName
+        DispatchQueue.main.async { [weak self] in
+            self?.emailLabel.text = user.email
+            self?.nameLabel.text = user.fullName
+        }
     }
     
     override func layoutSubviews() {
