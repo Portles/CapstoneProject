@@ -149,7 +149,7 @@ final class CartViewModel {
                 case .success(_):
                     if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
                         self?.getCartItems()
-                        self?.message = "Purchase completed, Thank you"
+                        self?.message = "Purchase completed Thank you"
                     }
                 case .failure(let error):
                     debugPrint(error.localizedDescription)
