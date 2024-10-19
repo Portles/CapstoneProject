@@ -29,7 +29,7 @@ class ProductDetailViewModelTests: XCTestCase {
     
     func testAddToBasketSuccess() {
         // Given
-        mockNetworkManager.stubbedAddToBasketResultResult = (.success(true), ())
+        mockNetworkManager.stubbedAddToBasketResult = (.success(true), ())
         
         // When
         let product = Product(id: 1, name: "Test Product", image: "image.png", category: "Test Category", price: 1000, brand: "Test Brand")
@@ -42,7 +42,7 @@ class ProductDetailViewModelTests: XCTestCase {
     
     func testAddToBasketFailure() {
         // Given
-        mockNetworkManager.stubbedAddToBasketResultResult = (.failure(.invalidResponse), ())
+        mockNetworkManager.stubbedAddToBasketResult = (.failure(.invalidResponse), ())
         
         // When
         let product = Product(id: 1, name: "Test Product", image: "image.png", category: "Test Category", price: 100, brand: "Test Brand")

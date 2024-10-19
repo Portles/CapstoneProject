@@ -100,12 +100,7 @@ final public class CartViewController: UIViewController {
         
         let confirmButtonAction: UIAction = UIAction(handler: { [weak self] _ in
             if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {
-                let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
-                alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { _ in
-                    self?.viewModel.confirmPurchases()
-                }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
-                self?.present(alert, animated: true, completion: nil)
+                self?.showConfirmPurchasesAlert()
             } else {
                 self?.navigationController?.tabBarController?.selectedIndex = 2
             }
@@ -120,6 +115,15 @@ final public class CartViewController: UIViewController {
         view.addSubview(totalPriceLabel)
         view.addSubview(totalPriceValueLabel)
         view.addSubview(confirmPurchasesButton)
+    }
+    
+    private func showConfirmPurchasesAlert() {
+        let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { [weak self] _ in
+            self?.viewModel.confirmPurchases()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     @objc private func performingSomethingChanged() {

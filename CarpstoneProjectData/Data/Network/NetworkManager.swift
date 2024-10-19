@@ -33,14 +33,28 @@ final public class NetworkManager: NetworkManagerProtocol {
         let request: URLRequest = URLRequest(url: url)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data else {
+            guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
                 completion(.failure(.invalidResponse))
+                return
+            }
+            
+            guard error == nil else {
+                completion(.failure(.message(error)))
+                return
+            }
+            
+            guard let data else {
+                completion(.failure(.invalidData))
                 return
             }
             
             do {
                 let productResponse: ProductResponse = try self.decoder.decode(ProductResponse.self, from: data)
-                completion(.success(productResponse.products))
+                if productResponse.success == 1 {
+                    completion(.success(productResponse.products))
+                } else {
+                    completion(.failure(.invalidData))
+                }
             } catch {
                 debugPrint(error.localizedDescription)
                 completion(.failure(.invalidData))
@@ -57,8 +71,18 @@ final public class NetworkManager: NetworkManagerProtocol {
         let request: URLRequest = URLRequest(url: url)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data else {
+            guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
                 completion(.failure(.invalidResponse))
+                return
+            }
+            
+            guard error == nil else {
+                completion(.failure(.message(error)))
+                return
+            }
+            
+            guard let data else {
+                completion(.failure(.invalidData))
                 return
             }
             
@@ -67,7 +91,6 @@ final public class NetworkManager: NetworkManagerProtocol {
         }.resume()
     }
     
-    // Here is some response maybe will be added later
     public func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let url = URL(string: URLEndpoints.addToBasket.rawValue) else {
             completion(.failure(.invalidURL))
@@ -79,14 +102,32 @@ final public class NetworkManager: NetworkManagerProtocol {
         request.httpBody = product.responseString.data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard response != nil else {
+            guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
                 completion(.failure(.invalidResponse))
                 return
             }
             
-            guard data != nil else {
+            guard error == nil else {
+                completion(.failure(.message(error)))
+                return
+            }
+            
+            guard let data else {
                 completion(.failure(.invalidData))
                 return
+            }
+            
+            do {
+                let messageResponse: MessageResponse = try self.decoder.decode(MessageResponse.self, from: data)
+                debugPrint(messageResponse)
+                if messageResponse.success == 1 {
+                    completion(.success(true))
+                } else {
+                    completion(.failure(.invalidData))
+                }
+            } catch {
+                debugPrint(error.localizedDescription)
+                completion(.failure(.invalidData))
             }
             
             completion(.success(true))
@@ -104,17 +145,32 @@ final public class NetworkManager: NetworkManagerProtocol {
         request.httpBody = "kullaniciAdi=nizamet_ozkan".data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data else {
+            guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
                 completion(.failure(.invalidResponse))
+                return
+            }
+            
+            guard error == nil else {
+                completion(.failure(.message(error)))
+                return
+            }
+            
+            guard let data else {
+                completion(.failure(.invalidData))
                 return
             }
             
             do {
                 let productResponse: CartProductResponse = try self.decoder.decode(CartProductResponse.self, from: data)
-                completion(.success(productResponse.products))
+                
+                if productResponse.success == 1 {
+                    completion(.success(productResponse.products))
+                } else {
+                    completion(.failure(.invalidData))
+                }
             } catch {
                 debugPrint(error.localizedDescription)
-                completion(.success([]))
+                completion(.failure(.invalidData))
             }
         }.resume()
     }
@@ -130,14 +186,13 @@ final public class NetworkManager: NetworkManagerProtocol {
         request.httpBody = "sepetId=\(cartId)&kullaniciAdi=nizamet_ozkan".data(using: .utf8)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            guard error != nil else {
-                debugPrint(error?.localizedDescription ?? "weird error")
-                completion(.success(false))
+            guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
+                completion(.failure(.invalidResponse))
                 return
             }
             
-            guard response != nil else {
-                completion(.failure(.invalidResponse))
+            guard error == nil else {
+                completion(.failure(.message(error)))
                 return
             }
             

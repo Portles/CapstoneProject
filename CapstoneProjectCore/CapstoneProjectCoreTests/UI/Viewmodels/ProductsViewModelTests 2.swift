@@ -36,7 +36,7 @@ class ProductsViewModelTests: XCTestCase {
             Product(id: 1, name: "someName1", image: "someImage1.some", category: "someCategory1", price: 1000, brand: "someBrand1"),
             Product(id: 2, name: "someName2", image: "someImage2.some", category: "someCategory2", price: 2000, brand: "someBrand2")
         ]
-        mockNetworkManager.stubbedFetchProductsResultResult = (.success(expectedProducts), ())
+        mockNetworkManager.stubbedFetchProductsResult = (.success(expectedProducts), ())
         var receivedProducts: [Product] = []
         let expectation = self.expectation(description: "Products getted")
         
@@ -61,7 +61,7 @@ class ProductsViewModelTests: XCTestCase {
     func test_getProducts_failure() {
         // Given
         let expectedError = NetworkError.invalidData
-        mockNetworkManager.stubbedFetchProductsResultResult = (.failure(expectedError), ())
+        mockNetworkManager.stubbedFetchProductsResult = (.failure(expectedError), ())
         
         // When
         viewModel.$products
@@ -84,7 +84,7 @@ class ProductsViewModelTests: XCTestCase {
             Product(id: 1, name: "someName1", image: "someImage1.some", category: "someCategory1", price: 1000, brand: "someBrand1"),
             Product(id: 2, name: "someName2", image: "someImage2.some", category: "someCategory2", price: 2000, brand: "someBrand2")
         ]
-        mockNetworkManager.stubbedFetchProductsResultResult = (.success(expectedProducts), ())
+        mockNetworkManager.stubbedFetchProductsResult = (.success(expectedProducts), ())
         var receivedProducts: [Product] = []
         let expectation = self.expectation(description: "Products loaded")
         var isFulfilled = false

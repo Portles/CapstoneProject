@@ -6,12 +6,12 @@
 //
 
 public struct ProductRequest {
-    let name: String
-    let image: String
+    private let name: String
+    private let image: String
     public let category: String
-    let price: Int
+    private let price: Int
     public let brand: String
-    let orderCount: Int
+    private let orderCount: Int
     private let userName: String = "nizamet_ozkan"
     
     public init(name: String, image: String, category: String, price: Int, brand: String, orderCount: Int) {

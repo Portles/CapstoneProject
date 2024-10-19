@@ -7,6 +7,7 @@
 
 public enum NetworkError: Error {
     case invalidURL
+    case message(_ error: Error?)
     case invalidResponse
     case invalidData
 }

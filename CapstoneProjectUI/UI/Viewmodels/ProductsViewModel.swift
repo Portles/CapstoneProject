@@ -23,9 +23,13 @@ final class ProductsViewModel {
         networkManager.fetchProducts { result in
             switch result {
             case .success(let products):
-                self.products = products
+                DispatchQueue.main.async { [weak self] in
+                    self?.products = products
+                }
             case .failure:
-                break
+                DispatchQueue.main.async { [weak self] in
+                    self?.products = []
+                }
             }
         }
     }

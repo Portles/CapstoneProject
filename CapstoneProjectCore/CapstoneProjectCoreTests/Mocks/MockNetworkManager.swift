@@ -15,12 +15,12 @@ class MockNetworkManager: NetworkManagerProtocol {
     
     var invokedFetchProducts = false
     var invokedFetchProductsCount = 0
-    var stubbedFetchProductsResultResult: (Result<[Product], NetworkError>, Void)?
+    var stubbedFetchProductsResult: (Result<[Product], NetworkError>, Void)?
 
     func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void) {
         invokedFetchProducts = true
         invokedFetchProductsCount += 1
-        if let result = stubbedFetchProductsResultResult {
+        if let result = stubbedFetchProductsResult {
             completion(result.0)
         }
     }
@@ -29,26 +29,26 @@ class MockNetworkManager: NetworkManagerProtocol {
     var invokedAddToBasketCount = 0
     var invokedAddToBasketParameters: (product: ProductRequest, Void)?
     var invokedAddToBasketParametersList = [(product: ProductRequest, Void)]()
-    var stubbedAddToBasketResultResult: (Result<Bool, NetworkError>, Void)?
+    var stubbedAddToBasketResult: (Result<Bool, NetworkError>, Void)?
 
     func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         invokedAddToBasket = true
         invokedAddToBasketCount += 1
         invokedAddToBasketParameters = (product, ())
         invokedAddToBasketParametersList.append((product, ()))
-        if let result = stubbedAddToBasketResultResult {
+        if let result = stubbedAddToBasketResult {
             completion(result.0)
         }
     }
 
     var invokedFetchBasket = false
     var invokedFetchBasketCount = 0
-    var stubbedFetchBasketResultResult: (Result<[CartProduct], NetworkError>, Void)?
+    var stubbedFetchBasketResult: (Result<[CartProduct], NetworkError>, Void)?
 
     func fetchBasket(_ completion: @escaping (Result<[CartProduct], NetworkError>) -> Void) {
         invokedFetchBasket = true
         invokedFetchBasketCount += 1
-        if let result = stubbedFetchBasketResultResult {
+        if let result = stubbedFetchBasketResult {
             completion(result.0)
         }
     }
@@ -57,14 +57,14 @@ class MockNetworkManager: NetworkManagerProtocol {
     var invokedRemoveFromCartCount = 0
     var invokedRemoveFromCartParameters: (cartId: Int, Void)?
     var invokedRemoveFromCartParametersList = [(cartId: Int, Void)]()
-    var stubbedRemoveFromCartResultResult: (Result<Bool, NetworkError>, Void)?
+    var stubbedRemoveFromCartResult: (Result<Bool, NetworkError>, Void)?
 
     func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         invokedRemoveFromCart = true
         invokedRemoveFromCartCount += 1
         invokedRemoveFromCartParameters = (cartId, ())
         invokedRemoveFromCartParametersList.append((cartId, ()))
-        if let result = stubbedRemoveFromCartResultResult {
+        if let result = stubbedRemoveFromCartResult {
             completion(result.0)
         }
     }

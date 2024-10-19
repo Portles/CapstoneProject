@@ -38,6 +38,7 @@ final class CartViewModel {
                 self?.rearangeDuplicatedItems(basketItems)
             case .failure(let error):
                 debugPrint(error.localizedDescription)
+                self?.rearangeDuplicatedItems([])
             }
         }
     }
