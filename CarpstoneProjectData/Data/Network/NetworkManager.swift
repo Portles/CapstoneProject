@@ -195,12 +195,23 @@ final public class NetworkManager: NetworkManagerProtocol {
                 return
             }
             
-            guard data != nil else {
+            guard let data else {
                 completion(.failure(.invalidData))
                 return
             }
             
-            completion(.success(true))
+            do {
+                let messageResponse: MessageResponse = try self.decoder.decode(MessageResponse.self, from: data)
+                debugPrint(messageResponse)
+                if messageResponse.success == 1 {
+                    completion(.success(true))
+                } else {
+                    completion(.failure(.invalidData))
+                }
+            } catch {
+                debugPrint(error.localizedDescription)
+                completion(.failure(.invalidData))
+            }
         }.resume()
     }
 }
