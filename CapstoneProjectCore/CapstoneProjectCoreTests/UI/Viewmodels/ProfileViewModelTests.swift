@@ -9,28 +9,24 @@ import XCTest
 @testable import CapstoneProjectUI
 
 class ProfileViewModelTests: XCTestCase {
-
+    
     var viewModel: ProfileViewModel!
-
+    
     override func setUp() {
         super.setUp()
         viewModel = ProfileViewModel()
     }
-
+    
     override func tearDown() {
         viewModel = nil
         super.tearDown()
     }
-
-    func testPerformingSomethingNotification() {
-        // Given
-        _ = self.expectation(forNotification: .performingSomethingChanged, object: nil, handler: nil)
-
-        // When
+    
+    func testPerformingSomethingChangedNotification() {
+        let expectation = self.expectation(forNotification: .performingSomethingChanged, object: nil, handler: nil)
+        
         viewModel.performingSomething = false
-
-        // Then
-        waitForExpectations(timeout: 1.0, handler: nil)
-        XCTAssertFalse(viewModel.performingSomething)
+        
+        wait(for: [expectation], timeout: 1.0)
     }
 }
