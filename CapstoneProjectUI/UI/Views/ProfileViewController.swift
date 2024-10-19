@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseAuth
 import CapstoneProjectData
+import Combine
 
 final public class ProfileViewController: UIViewController {
     private let viewModel: ProfileViewModel = ProfileViewModel()
@@ -24,8 +25,12 @@ final public class ProfileViewController: UIViewController {
     
     private let loggedInView: LoggedInView = LoggedInView()
     
+    private var cancellables: Set<AnyCancellable> = []
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
+        bindViewModel()
         
         configureUI()
     }
@@ -42,7 +47,7 @@ final public class ProfileViewController: UIViewController {
         super.viewDidAppear(animated)
         viewModel.performingSomething = true
         AppleSignInManager.shared.delegate = self
-        checkLoginStatus()
+        viewModel.checkLoginStatus()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             self?.viewModel.performingSomething = false
         }
@@ -60,30 +65,33 @@ final public class ProfileViewController: UIViewController {
         }
     }
     
-    private func checkLoginStatus() {
-        if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {
-            setLoggedView()
-            loggedInView.getLatestPurchase()
-        } else {
-            setLogoutedView()
-        }
+    private func bindViewModel() {
+        viewModel.$isLoggedIn
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoggedIn in
+                if let isLoggedIn {
+                    isLoggedIn ? self?.setLoggedView() : self?.setLogoutedView()
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$userModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] userModel in
+                if let userModel {
+                    self?.loggedInView.configure(with: userModel)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func setLoggedView() {
         loggedInView.delegate = self
-        FirebaseManager.fetchCurrentUserData { [weak self] model, error in
-            guard error == nil else {
-                debugPrint(error?.localizedDescription ?? "Fetch user data error")
-                return
-            }
-            
-            if let model {
-                self?.loggedInView.configure(with: model)
-            }
-        }
+        viewModel.getUser()
         
         view.addSubview(loggedInView)
         loggedInView.frame = view.bounds
+        loggedInView.getLatestPurchase()
     }
     
     private func setLogoutedView() {
