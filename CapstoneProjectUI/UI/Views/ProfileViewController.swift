@@ -40,12 +40,10 @@ final public class ProfileViewController: UIViewController {
     
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        DispatchQueue.main.async { [weak self] in
-            self?.viewModel.performingSomething = true
-        }
+        viewModel.performingSomething = true
         AppleSignInManager.shared.delegate = self
         checkLoginStatus()
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             self?.viewModel.performingSomething = false
         }
     }
@@ -60,13 +58,6 @@ final public class ProfileViewController: UIViewController {
             activityIndicator.stopAnimating()
             view.isUserInteractionEnabled = true
         }
-    }
-    
-    override public func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        activityIndicator.center = view.center
-        activityIndicator.frame = view.bounds
     }
     
     private func checkLoginStatus() {
@@ -98,6 +89,13 @@ final public class ProfileViewController: UIViewController {
     private func setLogoutedView() {
         view.addSubview(loginToSeeView)
         loginToSeeView.frame = view.bounds
+    }
+    
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        activityIndicator.center = view.center
+        activityIndicator.frame = view.bounds
     }
 }
 
