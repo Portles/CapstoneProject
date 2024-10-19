@@ -21,6 +21,7 @@ final class CartViewModel {
     }
     
     @Published private(set) var cartProducts: [CartProduct] = []
+    @Published private(set) var message: String?
     
     private var rawCartProducts: [CartProduct] = []
     
@@ -132,11 +133,11 @@ final class CartViewModel {
         
         FirebaseManager.saveBuyHistory(buyHistory) { [weak self] error in
             guard error == nil else {
-                debugPrint(error?.localizedDescription ?? "save buy history error")
+                debugPrint(error?.localizedDescription ?? "Save buy history error")
+                self?.message = "Purchase could not be completed, try again."
                 return
             }
             
-            debugPrint("Buyyed products saved successfully")
             self?.clearCart()
         }
     }
@@ -148,9 +149,11 @@ final class CartViewModel {
                 case .success(_):
                     if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
                         self?.getCartItems()
+                        self?.message = "Purchase completed, Thank you"
                     }
                 case .failure(let error):
                     debugPrint(error.localizedDescription)
+                    self?.message = "Purchase could not be completed, try again."
                 }
             }
         }

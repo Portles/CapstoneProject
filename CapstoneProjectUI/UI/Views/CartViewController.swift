@@ -90,6 +90,16 @@ final public class CartViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.$message
+            .receive(on: DispatchQueue.main)
+            .dropFirst()
+            .sink { [weak self] message in
+                if let message {
+                    self?.showMessage(message)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func configureUIElements() {
@@ -138,6 +148,16 @@ final public class CartViewController: UIViewController {
         }
     }
     
+    private func showMessage(_ message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func calculatePrice() {
+        totalPriceValueLabel.text = viewModel.calculateTotal()
+    }
+    
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -163,10 +183,6 @@ final public class CartViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: totalPriceLabel.topAnchor, constant: -20)
         ])
-    }
-    
-    private func calculatePrice() {
-        totalPriceValueLabel.text = viewModel.calculateTotal()
     }
 }
 

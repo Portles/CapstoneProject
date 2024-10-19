@@ -6,8 +6,8 @@
 //
 
 struct CartProductResponse: Decodable {
-    let products: [CartProduct]
-    let success: Int
+    public let products: [CartProduct]
+    public let success: Int
     
     enum CodingKeys: String, CodingKey {
         case products = "urunler_sepeti"

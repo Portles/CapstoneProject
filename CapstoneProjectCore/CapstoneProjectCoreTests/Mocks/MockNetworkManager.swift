@@ -9,9 +9,6 @@ import CapstoneProjectData
 import Foundation
 
 class MockNetworkManager: NetworkManagerProtocol {
-    static func fetchImages(imageEndpoint: String, _ result: @escaping (Result<Data, CapstoneProjectData.NetworkError>) -> Void) {
-        result(.success(Data()))
-    }
     
     var invokedFetchProducts = false
     var invokedFetchProductsCount = 0

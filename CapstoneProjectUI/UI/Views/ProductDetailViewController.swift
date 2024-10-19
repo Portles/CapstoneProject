@@ -110,10 +110,29 @@ final class ProductDetailViewController: UIViewController {
     private func bindViewModel() {
         viewModel.$imageData
             .receive(on: DispatchQueue.main)
+            .dropFirst()
             .sink { [weak self] data in
-                self?.imageView.image = UIImage(data: data)
+                if let data {
+                    self?.imageView.image = UIImage(data: data)
+                }
             }
             .store(in: &cancellables)
+        
+        viewModel.$message
+            .receive(on: DispatchQueue.main)
+            .dropFirst()
+            .sink { [weak self] message in
+                if let message {
+                    self?.showMessage(message)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func showMessage(_ message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func performingSomethingChanged() {

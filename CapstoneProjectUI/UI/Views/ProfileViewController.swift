@@ -107,27 +107,19 @@ extension ProfileViewController: LoggedInViewDelegate {
     }
     
     func logoutButtonTapped() {
-        DispatchQueue.main.async { [weak self] in
-            self?.viewModel.performingSomething = true
-        }
+        viewModel.performingSomething = true
         setLogoutedView()
         loggedInView.removeFromSuperview()
-        DispatchQueue.main.async { [weak self] in
-            self?.viewModel.performingSomething = false
-        }
+        viewModel.performingSomething = false
     }
 }
 
 extension ProfileViewController: AppleSignInDelegate {
     public func appleSignInDidComplete(user: FirebaseAuth.User) {
-        DispatchQueue.main.async { [weak self] in
-            self?.viewModel.performingSomething = true
-        }
+        viewModel.performingSomething = true
         setLoggedView()
         loginToSeeView.removeFromSuperview()
-        DispatchQueue.main.async { [weak self] in
-            self?.viewModel.performingSomething = false
-        }
+        viewModel.performingSomething = false
     }
     
     public func appleSignInDidFail(error: any Error) {

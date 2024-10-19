@@ -6,6 +6,6 @@
 //
 
 public struct MessageResponse: Decodable {
-    let success: Int
-    let message: String
+    public let success: Int
+    private let message: String
 }

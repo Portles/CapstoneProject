@@ -9,7 +9,6 @@ import Foundation.NSURL
 
 public protocol NetworkManagerProtocol {
     func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void)
-    static func fetchImages(imageEndpoint: String, _ completion: @escaping (Result<Data, NetworkError>) -> Void)
     func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
     func fetchBasket(_ completion: @escaping (Result<[CartProduct], NetworkError>) -> Void)
     func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)

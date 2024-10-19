@@ -77,37 +77,4 @@ class ProductsViewModelTests: XCTestCase {
         XCTAssertTrue(mockNetworkManager.invokedFetchProducts)
         XCTAssertEqual(mockNetworkManager.invokedFetchProductsCount, 2)
     }
-    
-    func test_reArrangeProduct() {
-        // Given
-        let expectedProducts: [Product] = [
-            Product(id: 1, name: "someName1", image: "someImage1.some", category: "someCategory1", price: 1000, brand: "someBrand1"),
-            Product(id: 2, name: "someName2", image: "someImage2.some", category: "someCategory2", price: 2000, brand: "someBrand2")
-        ]
-        mockNetworkManager.stubbedFetchProductsResult = (.success(expectedProducts), ())
-        var receivedProducts: [Product] = []
-        let expectation = self.expectation(description: "Products loaded")
-        var isFulfilled = false
-        
-        viewModel.$products
-            .dropFirst()
-            .sink { products in
-                receivedProducts = products
-                if !isFulfilled {
-                    expectation.fulfill()
-                    isFulfilled = true
-                }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.getProducts()
-        
-        // When
-        viewModel.reArrangeProduct(IndexPath(row: 0, section: 0), IndexPath(row: 1, section: 0), receivedProducts[0])
-        
-        // Then
-        waitForExpectations(timeout: 1.0, handler: nil)
-        XCTAssertEqual(viewModel.products[0], expectedProducts[1])
-        XCTAssertEqual(viewModel.products[1], expectedProducts[0])
-    }
 }

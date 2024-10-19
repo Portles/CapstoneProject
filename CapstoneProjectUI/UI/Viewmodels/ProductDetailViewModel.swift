@@ -12,7 +12,8 @@ import Combine
 final class ProductDetailViewModel {
     private let networkManager: NetworkManagerProtocol
     
-    @Published private(set) var imageData: Data = Data()
+    @Published private(set) var imageData: Data?
+    @Published private(set) var message: String?
     
     var performingSomething: Bool = false {
         didSet {
@@ -37,15 +38,15 @@ final class ProductDetailViewModel {
         networkManager.addToBasket(product: productRequest) { [weak self] result in
             switch result {
                 case .success:
-                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self?.performingSomething = false
+                    self?.message = "Successfully added to basket"
                 }
-                print("Added to basket successfully")
             case .failure:
-                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self?.performingSomething = false
+                    self?.message = "Failed to add to basket"
                 }
-                print("Failed to add to basket")
             }
         }
     }
