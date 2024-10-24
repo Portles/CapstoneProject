@@ -5,7 +5,16 @@
 //  Created by Nizamet Özkan on 8.10.2024.
 //
 
-public struct CartProduct: Codable {
+public struct CartProduct: Codable, Equatable {
+    public static func == (lhs: CartProduct, rhs: CartProduct) -> Bool {
+        lhs.name == rhs.name
+        && lhs.image == rhs.image
+        && lhs.category == rhs.category
+        && lhs.price == rhs.price
+        && lhs.brand == rhs.brand
+        && lhs.orderCount == rhs.orderCount
+    }
+    
     public let cartId: Int
     public let name: String
     public let image: String

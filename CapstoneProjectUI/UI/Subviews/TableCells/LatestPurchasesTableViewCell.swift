@@ -8,6 +8,10 @@
 import UIKit.UITableViewCell
 import CapstoneProjectData
 
+protocol LatestPurchasesTableViewCellDelegate {
+    func setImage(_ image: UIImage)
+}
+
 final class LatestPurchasesTableViewCell: UITableViewCell {
     static let identifier: String = "LatestPurchasesTableViewCell"
     
@@ -97,18 +101,7 @@ final class LatestPurchasesTableViewCell: UITableViewCell {
     }
     
     func configure(imageName: String, name: String, price: Int, count: Int) {
-        NetworkManager.fetchImages(imageEndpoint: imageName) { result in
-            switch result {
-            case .success(let imageData):
-                if let image = UIImage(data: imageData) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.productImageView.image = image
-                    }
-                }
-            case .failure(let error):
-                debugPrint(error.localizedDescription)
-            }
-        }
+        
         nameLabel.text = name
         priceLabel.text = "Piece: \(price)TL"
         countLabel.text = "\(count)X"
@@ -121,3 +114,10 @@ final class LatestPurchasesTableViewCell: UITableViewCell {
         priceLabel.text = nil
     }
 }
+
+extension LatestPurchasesTableViewCell: LatestPurchasesTableViewCellDelegate {
+    func setImage(_ image: UIImage) {
+        productImageView.image = image
+    }
+}
+

@@ -7,6 +7,7 @@
 
 import UIKit
 import CapstoneProjectUI
+import CapstoneProjectData
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,7 +17,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let firstVC = ProductsViewController()
+        let networkManager: NetworkManager = NetworkManager()
+        let main: DispatchQueueInterface = DispatchQueue.main
+        
+        let firstVCViewModel = ProductsViewModel(networkManager: networkManager)
+        let firstVC = ProductsViewController(viewModel: firstVCViewModel, main: main)
+        firstVCViewModel.view = firstVC
         firstVC.view.backgroundColor = .secondarySystemBackground
         firstVC.title = "Products"
         let firstNavController = UINavigationController(rootViewController: firstVC)

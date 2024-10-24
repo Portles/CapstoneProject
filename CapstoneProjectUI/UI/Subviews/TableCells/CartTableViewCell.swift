@@ -12,7 +12,7 @@ protocol CartTableViewCellDelegate {
     func didTapRemoveButton(_ index: IndexPath)
 }
 
-final class CartTableViewCell: UITableViewCell {
+final class CartTableViewCell: UITableViewCell, Errorable {
     static let identifier: String = "CartTableViewCell"
     
     var delegate: CartTableViewCellDelegate?
@@ -126,18 +126,20 @@ final class CartTableViewCell: UITableViewCell {
     }
     
     func configure(imageName: String, name: String, price: Int, count: Int) {
-        NetworkManager.fetchImages(imageEndpoint: imageName) { result in
-            switch result {
-            case .success(let imageData):
-                if let image = UIImage(data: imageData) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.productImageView.image = image
-                    }
-                }
-            case .failure(let error):
-                debugPrint(error.localizedDescription)
-            }
-        }
+//        Task {
+//            do {
+//                let imageData = try await networkManager.fetchImages(imageEndpoint: imageName)
+//                
+//                if let image = UIImage(data: imageData) {
+//                    DispatchQueue.main.async { [weak self] in
+//                        self?.productImageView.image = image
+//                    }
+//                }
+//            } catch {
+//                handleError(error)
+//            }
+//        }
+        
         nameLabel.text = name
         priceLabel.text = "\(price)TL"
         countLabel.text = "Count: \(count)"

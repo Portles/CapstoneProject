@@ -9,7 +9,11 @@ import Foundation
 import Combine
 import CapstoneProjectData
 
-final class CartViewModel {
+protocol CartViewModelInterface {
+    
+}
+
+final class CartViewModel: CartViewModelInterface {
     private let networkManager: NetworkManagerProtocol
     
     var performingSomething: Bool = false {
@@ -20,13 +24,19 @@ final class CartViewModel {
         }
     }
     
+    private let main: DispatchQueueInterface
     @Published private(set) var cartProducts: [CartProduct] = []
     @Published private(set) var message: String?
     
     private var rawCartProducts: [CartProduct] = []
     
-    init(networkManager: NetworkManagerProtocol = NetworkManager()) {
+    var total: String {
+        calculateTotal()
+    }
+    
+    init(networkManager: NetworkManagerProtocol = NetworkManager(), main: DispatchQueueInterface = DispatchQueue.main) {
         self.networkManager = networkManager
+        self.main = main
         getCartItems()
     }
     
@@ -44,7 +54,7 @@ final class CartViewModel {
         }
     }
     
-    func calculateTotal() -> String {
+    private func calculateTotal() -> String {
         var total: Int = 0
         
         cartProducts.forEach { product in
@@ -56,7 +66,7 @@ final class CartViewModel {
     
     func removeCartItem(_ cartProduct: CartProduct) {
         let cartIdsToRemove: [Int] = rawCartProducts.compactMap { rawCartProduct in
-            guard rawCartProduct.name == cartProduct.name, rawCartProduct.price == cartProduct.price, rawCartProduct.image == cartProduct.image, rawCartProduct.category == cartProduct.category, rawCartProduct.brand == cartProduct.brand else {
+            guard rawCartProduct == cartProduct else {
                 return nil
             }
             

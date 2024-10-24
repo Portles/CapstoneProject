@@ -91,10 +91,9 @@ class CartViewModelTests: XCTestCase {
         
         // When
         viewModel.getCartItems()
-        let total = viewModel.calculateTotal()
         
         // Then
-        XCTAssertEqual(total, "500TL")
+        XCTAssertEqual(viewModel.total, "500TL")
     }
     
     func testConfirmPurchasesSuccess() {

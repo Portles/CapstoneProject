@@ -9,13 +9,13 @@ import Foundation
 import CapstoneProjectData
 import Combine
 
-final class ProductDetailViewModel {
+final class ProductDetailViewModel: Errorable {
     private let networkManager: NetworkManagerProtocol
     
     @Published private(set) var imageData: Data?
     @Published private(set) var message: String?
     
-    var performingSomething: Bool = false {
+    var performingSomething: Bool {
         didSet {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
@@ -23,7 +23,8 @@ final class ProductDetailViewModel {
         }
     }
     
-    init(performingSomething: Bool = false, networkManager: NetworkManagerProtocol = NetworkManager()) {
+    init(networkManager: NetworkManagerProtocol = NetworkManager(),
+        performingSomething: Bool = false) {
         self.networkManager = networkManager
         self.performingSomething = performingSomething
     }
@@ -31,9 +32,16 @@ final class ProductDetailViewModel {
     func addToBasket(product: Product, orderCount: Int) {
         performingSomething = true
         
-        let productRequest: ProductRequest = ProductRequest(name: product.name, image: product.image, category: product.category, price: product.price, brand: product.brand, orderCount: orderCount)
+        let productRequest: ProductRequest = ProductRequest(
+            name: product.name,
+            image: product.image,
+            category: product.category,
+            price: product.price,
+            brand: product.brand,
+            orderCount: orderCount
+        )
         
-        print("Adding Basket Request Triggered")
+        debugPrint("Adding Basket Request Triggered")
         
         networkManager.addToBasket(product: productRequest) { [weak self] result in
             switch result {
@@ -52,13 +60,14 @@ final class ProductDetailViewModel {
     }
     
     func getImage(imageEndpoint: String) {
-        NetworkManager.fetchImages(imageEndpoint: imageEndpoint, { [weak self] result in
-            switch result {
-            case .success(let imageData):
-                self?.imageData = imageData
-            case .failure(let error):
-                print(error)
+        Task {
+            do {
+                let imageData = try await networkManager.fetchImages(imageEndpoint: imageEndpoint)
+                
+                self.imageData = imageData
+            } catch {
+                handleError(error)
             }
-        })
+        }
     }
 }

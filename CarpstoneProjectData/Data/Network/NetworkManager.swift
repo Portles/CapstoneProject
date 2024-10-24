@@ -9,6 +9,7 @@ import Foundation.NSURL
 
 public protocol NetworkManagerProtocol {
     func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void)
+    func fetchImages(imageEndpoint: String) async throws -> Data
     func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
     func fetchBasket(_ completion: @escaping (Result<[CartProduct], NetworkError>) -> Void)
     func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
@@ -61,7 +62,21 @@ final public class NetworkManager: NetworkManagerProtocol {
         }.resume()
     }
     
-    public static func fetchImages(imageEndpoint: String, _ completion: @escaping (Result<Data, NetworkError>) -> Void) -> Void {
+    public func fetchImages(imageEndpoint: String) async throws -> Data {
+        guard let url = URL(string: "\(URLEndpoints.fetchImages.rawValue)\(imageEndpoint)") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let response = response as? HTTPURLResponse, 200...299  ~= response.statusCode else {
+            throw NetworkError.invalidResponse
+        }
+        
+        return data
+    }
+    
+    public func fetchImages(imageEndpoint: String, _ completion: @escaping (Result<Data, NetworkError>) -> Void) {
         guard let url = URL(string: "\(URLEndpoints.fetchImages.rawValue)\(imageEndpoint)") else {
             completion(.failure(.invalidURL))
             return

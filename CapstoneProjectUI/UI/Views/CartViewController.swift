@@ -10,7 +10,20 @@ import Combine
 import FirebaseAuth
 import CapstoneProjectData
 
-final public class CartViewController: UIViewController {
+protocol Alertable {
+    func showAlert(_ message: String?)
+}
+
+extension Alertable where Self: UIViewController {
+    func showAlert(_ message: String?) {
+        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action: UIAlertAction = UIAlertAction(title: "OK", style: .destructive)
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+}
+
+final public class CartViewController: UIViewController, Alertable {
     private let viewModel: CartViewModel = CartViewModel()
     
     private var cancellables: Set<AnyCancellable> = []
@@ -81,13 +94,11 @@ final public class CartViewController: UIViewController {
                 self?.tableView.reloadData()
                 self?.calculatePrice()
                 
-                if newValue.isEmpty {
-                    self?.confirmPurchasesButton.isEnabled = false
-                    self?.confirmPurchasesButton.layer.opacity = 0.3
-                } else {
-                    self?.confirmPurchasesButton.isEnabled = true
-                    self?.confirmPurchasesButton.layer.opacity = 1.0
-                }
+//                self?.viewModel.checkNewValue(newValue)
+//                
+//                self?.confirmPurchasesButton.isEnabled = self?.viewModel.confirmButtonEnability
+//                self?.confirmPurchasesButton.layer.opacity = self?.viewModel.confirmButtonOpacity
+                
             }
             .store(in: &cancellables)
         
@@ -95,9 +106,7 @@ final public class CartViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .dropFirst()
             .sink { [weak self] message in
-                if let message {
-                    self?.showMessage(message)
-                }
+                self?.showAlert(message)
             }
             .store(in: &cancellables)
     }
@@ -148,14 +157,8 @@ final public class CartViewController: UIViewController {
         }
     }
     
-    private func showMessage(_ message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
     private func calculatePrice() {
-        totalPriceValueLabel.text = viewModel.calculateTotal()
+        totalPriceValueLabel.text = viewModel.total
     }
     
     override public func viewDidLayoutSubviews() {

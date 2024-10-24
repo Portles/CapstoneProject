@@ -8,6 +8,10 @@
 import UIKit
 import CapstoneProjectData
 
+protocol ProductCollectionViewCellInterface {
+    func setImage(_ image: UIImage?)
+}
+
 final class ProductCollectionViewCell: UICollectionViewCell {
     static let identifier: String = "ProductCollectionViewCell"
     
@@ -58,8 +62,6 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     func configure(name: String, price: Int, imageName: String) {
         labelName.text = name
         labelPrice.text = "\(price) TL"
-        
-        setImage(imageName)
     }
     
     override func layoutSubviews() {
@@ -85,19 +87,13 @@ final class ProductCollectionViewCell: UICollectionViewCell {
             labelPrice.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -10),
         ])
     }
-    
-    private func setImage(_ imageName: String) {
-        NetworkManager.fetchImages(imageEndpoint: imageName) { [weak self] result in
-            switch result {
-                case .success(let uiImage):
-                if let image = UIImage(data: uiImage) {
-                    DispatchQueue.main.async { [weak self] in
-                        self?.imageView.image = image
-                    }
-                }
-            case .failure:
-                return
-            }
+}
+
+// MARK: -- ProductCollectionViewCellInterface
+extension ProductCollectionViewCell: ProductCollectionViewCellInterface {
+    func setImage(_ image: UIImage?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.imageView.image = image
         }
     }
 }
