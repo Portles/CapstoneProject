@@ -7,31 +7,50 @@
 
 import Foundation
 import CapstoneProjectData
-import Combine
+import UIKit.UIImage
 
-final class ProductDetailViewModel: Errorable {
+public protocol ProductDetailViewModelInterface: Errorable {
+    var view: ProductDetailViewControllerInterface? { get set }
+    var productName: String { get }
+    
+    func addToBasket(orderCount: Int)
+    func getImage() async -> UIImage
+    func viewDidLoad()
+    func viewDidLayoutSubviews()
+}
+
+final public class ProductDetailViewModel {
     private let networkManager: NetworkManagerProtocol
+    private let main: DispatchQueueInterface
     
-    @Published private(set) var imageData: Data?
-    @Published private(set) var message: String?
+    weak public var view: ProductDetailViewControllerInterface?
     
-    var performingSomething: Bool {
-        didSet {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
-            }
-        }
-    }
+    private let product: Product
     
-    init(networkManager: NetworkManagerProtocol = NetworkManager(),
-        performingSomething: Bool = false) {
+    private var imageData: Data?
+    
+    init(product: Product, networkManager: NetworkManagerProtocol,
+         main: DispatchQueueInterface = DispatchQueue.main) {
+        self.product = product
         self.networkManager = networkManager
-        self.performingSomething = performingSomething
+        self.main = main
+    }
+}
+
+extension ProductDetailViewModel: ProductDetailViewModelInterface {
+    public var productName: String {
+        product.name
     }
     
-    func addToBasket(product: Product, orderCount: Int) {
-        performingSomething = true
-        
+    public func viewDidLoad() {
+        view?.configureUIElement()
+    }
+    
+    public func viewDidLayoutSubviews() {
+        view?.setConstraints()
+    }
+    
+    public func addToBasket(orderCount: Int) {
         let productRequest: ProductRequest = ProductRequest(
             name: product.name,
             image: product.image,
@@ -45,28 +64,30 @@ final class ProductDetailViewModel: Errorable {
         
         networkManager.addToBasket(product: productRequest) { [weak self] result in
             switch result {
-                case .success:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self?.performingSomething = false
-                    self?.message = "Successfully added to basket"
+            case .success(_):
+                self?.main.asyncAfter(delay: 1) {
+                    self?.view?.showAlert("Yey")
                 }
-            case .failure:
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self?.performingSomething = false
-                    self?.message = "Failed to add to basket"
+            case .failure(let error):
+                self?.main.asyncAfter(delay: 1) {
+                    self?.handleError(error)
                 }
             }
         }
     }
     
-    func getImage(imageEndpoint: String) {
-        Task {
-            do {
-                let imageData = try await networkManager.fetchImages(imageEndpoint: imageEndpoint)
-                
-                self.imageData = imageData
-            } catch {
-                handleError(error)
+    public func getImage() async -> UIImage {
+        return await withCheckedContinuation { continuation in
+            Task {
+                do {
+                    let imageData = try await self.networkManager.fetchImages(imageEndpoint: product.image)
+                    
+                    if let uiImage = UIImage(data: imageData) {
+                        continuation.resume(returning: uiImage)
+                    }
+                } catch {
+                    handleError(error)
+                }
             }
         }
     }

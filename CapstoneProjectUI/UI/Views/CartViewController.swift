@@ -10,19 +10,6 @@ import Combine
 import FirebaseAuth
 import CapstoneProjectData
 
-protocol Alertable {
-    func showAlert(_ message: String?)
-}
-
-extension Alertable where Self: UIViewController {
-    func showAlert(_ message: String?) {
-        let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let action: UIAlertAction = UIAlertAction(title: "OK", style: .destructive)
-        alert.addAction(action)
-        present(alert, animated: true)
-    }
-}
-
 final public class CartViewController: UIViewController, Alertable {
     private let viewModel: CartViewModel = CartViewModel()
     

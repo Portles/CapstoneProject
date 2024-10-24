@@ -90,6 +90,7 @@ final public class ProductsViewController: UIViewController {
 }
 
 extension ProductsViewController: ProductsViewControllerInterface {
+    
     public func reloadCollectionViewData() {
         main.async { [weak self] in
             self?.collectionView.reloadData()
@@ -126,8 +127,7 @@ extension ProductsViewController: ProductsViewControllerInterface {
 extension ProductsViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let product = viewModel.getProduct(index: indexPath.row) else { return }
-        let viewController: ProductDetailViewController = ProductDetailViewController(product: product)
-        viewController.modalPresentationStyle = .fullScreen
+        guard let viewController = viewModel.getProductDetailView(product: product) else { return }
         present(viewController, animated: true, completion: nil)
     }
 }

@@ -19,17 +19,22 @@ public protocol ProductsViewModelInterface: AnyObject, Errorable {
     func getProduct(index: Int) -> Product?
     func reArrangeProduct(_ sourceIndexPath: IndexPath, _ destinationIndexPath: IndexPath, _ product: Product)
     func getProductImage(_ imageName: String) async -> UIImage
+    
+    func getProductDetailView(product: Product) -> UIViewController?
 }
 
 final public class ProductsViewModel {
     private let networkManager: NetworkManagerProtocol
+    private let main: DispatchQueueInterface
     
     weak public var view: ProductsViewControllerInterface?
     
     private var products: [Product]?
     
-    public init(networkManager: NetworkManagerProtocol) {
+    public init(networkManager: NetworkManagerProtocol,
+                main: DispatchQueueInterface) {
         self.networkManager = networkManager
+        self.main = main
     }
     
     private func getProductsSuccess(_ products: [Product]) {
@@ -47,6 +52,7 @@ final public class ProductsViewModel {
 }
 
 extension ProductsViewModel: ProductsViewModelInterface {
+    
     public var productCount: Int {
         products?.count ?? 0
     }
@@ -95,5 +101,14 @@ extension ProductsViewModel: ProductsViewModelInterface {
                 self?.handleError(error)
             }
         }
+    }
+    
+    public func getProductDetailView(product: Product) -> UIViewController? {
+        let viewModel = ProductDetailViewModel(product: product, networkManager: networkManager, main: main)
+        let viewController: ProductDetailViewController = ProductDetailViewController(viewModel: viewModel)
+        viewModel.view = viewController
+        viewController.modalPresentationStyle = .fullScreen
+        
+        return viewController
     }
 }

@@ -7,12 +7,14 @@
 
 import UIKit
 import CapstoneProjectData
-import Combine
 
-final class ProductDetailViewController: UIViewController {
-    private let viewModel: ProductDetailViewModel = ProductDetailViewModel()
-    
-    private let product: Product
+public protocol ProductDetailViewControllerInterface: AnyObject, Errorable, Alertable {
+    func configureUIElement()
+    func setConstraints()
+}
+
+final public class ProductDetailViewController: UIViewController {
+    private let viewModel: ProductDetailViewModelInterface
     
     private let activityIndicator: UIActivityIndicatorView = {
         let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
@@ -57,10 +59,8 @@ final class ProductDetailViewController: UIViewController {
         return stepper
     }()
     
-    private var cancellables: Set<AnyCancellable> = []
-    
-    init(product: Product) {
-        self.product = product
+    init(viewModel: ProductDetailViewModelInterface) {
+        self.viewModel = viewModel
         super.init(nibName: nil ,bundle: nil)
     }
     
@@ -68,24 +68,30 @@ final class ProductDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
-        
-        bindViewModel()
-        
-        configureUIElement()
+        viewModel.viewDidLoad()
     }
     
-    private func configureUIElement() {
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        viewModel.viewDidLayoutSubviews()
+    }
+    
+    private func setImageView(_ uiImage: UIImage?) {
+        imageView.image = uiImage
+    }
+}
+
+extension ProductDetailViewController: ProductDetailViewControllerInterface {
+    public func configureUIElement() {
         view.backgroundColor = .systemBackground
         
-        labelName.text = product.name
-        
-        viewModel.getImage(imageEndpoint: product.image)
+        labelName.text = viewModel.productName
         
         let buttonAction: UIAction = UIAction(handler: { [weak self] _ in
-            if let product = self?.product, let counter = self?.buyView.counter {
-                self?.viewModel.addToBasket(product: product, orderCount: counter)
+            if let counter = self?.buyView.counter {
+                self?.viewModel.addToBasket(orderCount: counter)
             }
         })
         
@@ -96,7 +102,15 @@ final class ProductDetailViewController: UIViewController {
         buyView.buttonAddToCart.addAction(buttonAction, for: .touchUpInside)
         dismissButton.addAction(dismissButtonAction, for: .touchUpInside)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
+        Task.detached { [weak self] in
+            guard let self else { return }
+            
+            let uiImage = await self.viewModel.getImage()
+            
+            return await MainActor.run {
+                self.setImageView(uiImage)
+            }
+        }
         
         view.addSubview(activityIndicator)
         view.addSubview(labelTitle)
@@ -104,52 +118,9 @@ final class ProductDetailViewController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(labelName)
         view.addSubview(buyView)
-        
     }
     
-    private func bindViewModel() {
-        viewModel.$imageData
-            .receive(on: DispatchQueue.main)
-            .dropFirst()
-            .sink { [weak self] data in
-                if let data {
-                    self?.imageView.image = UIImage(data: data)
-                }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$message
-            .receive(on: DispatchQueue.main)
-            .dropFirst()
-            .sink { [weak self] message in
-                if let message {
-                    self?.showMessage(message)
-                }
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func showMessage(_ message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
-    @objc private func performingSomethingChanged() {
-        let isLoading = viewModel.performingSomething
-        activityIndicator.isHidden = !isLoading
-        if isLoading {
-            activityIndicator.startAnimating()
-            view.isUserInteractionEnabled = false
-        } else {
-            activityIndicator.stopAnimating()
-            view.isUserInteractionEnabled = true
-        }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
+    public func setConstraints() {
         activityIndicator.center = view.center
         activityIndicator.frame = view.bounds
         

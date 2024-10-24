@@ -20,7 +20,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let networkManager: NetworkManager = NetworkManager()
         let main: DispatchQueueInterface = DispatchQueue.main
         
-        let firstVCViewModel = ProductsViewModel(networkManager: networkManager)
+        let firstVCViewModel = ProductsViewModel(networkManager: networkManager, main: main)
         let firstVC = ProductsViewController(viewModel: firstVCViewModel, main: main)
         firstVCViewModel.view = firstVC
         firstVC.view.backgroundColor = .secondarySystemBackground
