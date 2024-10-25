@@ -8,10 +8,19 @@
 import UIKit
 import FirebaseAuth
 import CapstoneProjectData
-import Combine
+
+public protocol ProfileViewControllerInterface: AnyObject, Alertable {
+    func configureUI()
+    func setConstraints()
+    
+    func getSelf() -> (any AppleSignInDelegate)?
+    
+    func setLoggedView()
+    func setLogoutedView()
+}
 
 final public class ProfileViewController: UIViewController {
-    private let viewModel: ProfileViewModel = ProfileViewModel()
+    private let viewModel: ProfileViewModelInterface
     
     private let activityIndicator: UIActivityIndicatorView = {
         let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
@@ -25,67 +34,42 @@ final public class ProfileViewController: UIViewController {
     
     private let loggedInView: LoggedInView = LoggedInView()
     
-    private var cancellables: Set<AnyCancellable> = []
+    public init(viewModel: ProfileViewModelInterface) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
-        bindViewModel()
-        
-        configureUI()
-    }
-    
-    private func configureUI() {
-        view.backgroundColor = .systemBackground
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
-        
-        view.addSubview(activityIndicator)
+        viewModel.viewDidLoad()
     }
     
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        viewModel.performingSomething = true
-        AppleSignInManager.shared.delegate = self
-        viewModel.checkLoginStatus()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            self?.viewModel.performingSomething = false
-        }
+        viewModel.viewDidAppear()
     }
     
-    @objc private func performingSomethingChanged() {
-        let isLoading = viewModel.performingSomething
-        activityIndicator.isHidden = !isLoading
-        if isLoading {
-            activityIndicator.startAnimating()
-            view.isUserInteractionEnabled = false
-        } else {
-            activityIndicator.stopAnimating()
-            view.isUserInteractionEnabled = true
-        }
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        viewModel.viewDidLAyoutSubviews()
+    }
+}
+
+extension ProfileViewController: ProfileViewControllerInterface {
+    public func getSelf() -> (any AppleSignInDelegate)? {
+        self
     }
     
-    private func bindViewModel() {
-        viewModel.$isLoggedIn
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isLoggedIn in
-                if let isLoggedIn {
-                    isLoggedIn ? self?.setLoggedView() : self?.setLogoutedView()
-                }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$userModel
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] userModel in
-                if let userModel {
-                    self?.loggedInView.configure(with: userModel)
-                }
-            }
-            .store(in: &cancellables)
+    public func setConstraints() {
+        activityIndicator.center = view.center
+        activityIndicator.frame = view.bounds
     }
     
-    private func setLoggedView() {
+    public func setLoggedView() {
         loggedInView.delegate = self
         viewModel.getUser()
         
@@ -94,38 +78,33 @@ final public class ProfileViewController: UIViewController {
         loggedInView.getLatestPurchase()
     }
     
-    private func setLogoutedView() {
+    public func setLogoutedView() {
         view.addSubview(loginToSeeView)
         loginToSeeView.frame = view.bounds
     }
     
-    override public func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    public func configureUI() {
+        view.backgroundColor = .systemBackground
         
-        activityIndicator.center = view.center
-        activityIndicator.frame = view.bounds
+        view.addSubview(activityIndicator)
     }
 }
 
-extension ProfileViewController: LoggedInViewDelegate {
+extension ProfileViewController: LoggedInViewDelegate, NavigationControllerDelegate {
     func didTapBuyButton() {
-        self.navigationController?.tabBarController?.selectedIndex = 0
+        changeSelectedIndex(0)
     }
     
     func logoutButtonTapped() {
-        viewModel.performingSomething = true
         setLogoutedView()
         loggedInView.removeFromSuperview()
-        viewModel.performingSomething = false
     }
 }
 
 extension ProfileViewController: AppleSignInDelegate {
     public func appleSignInDidComplete(user: FirebaseAuth.User) {
-        viewModel.performingSomething = true
         setLoggedView()
         loginToSeeView.removeFromSuperview()
-        viewModel.performingSomething = false
     }
     
     public func appleSignInDidFail(error: any Error) {

@@ -37,7 +37,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let secondNavController = UINavigationController(rootViewController: secondVC)
         secondNavController.tabBarItem = UITabBarItem(title: "Cart", image: UIImage(systemName: "cart.fill"), tag: 1)
         
-        let thirdVC = ProfileViewController()
+        let thirdVCViewModel = ProfileViewModel()
+        let thirdVC = ProfileViewController(viewModel: thirdVCViewModel)
+        thirdVCViewModel.view = thirdVC
         thirdVC.view.backgroundColor = .systemBackground
         thirdVC.title = "Profile"
         let thirdNavController = UINavigationController(rootViewController: thirdVC)

@@ -8,28 +8,74 @@
 import Foundation
 import CapstoneProjectData
 
-final class ProfileViewModel {
-    private var isLoggedIn: Bool?
-    private var userModel: UserModel?
+public protocol ProfileViewModelInterface {
+    var isLoggedIn: Bool { get }
+    var userModel: UserModel? { get }
     
-    func checkLoginStatus() {
-        if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {
-            isLoggedIn = true
-        } else {
-            isLoggedIn = false
-        }
+    func viewDidLoad()
+    func viewDidAppear()
+    func viewDidLAyoutSubviews()
+    func getUser()
+}
+
+final public class ProfileViewModel {
+    public var isLoggedIn: Bool {
+        AppleSignInFirebaseAuth.shared.isUserLoggedIn()
     }
     
-    func getUser() {
+    public var userModel: UserModel?
+    
+    public weak var view: ProfileViewControllerInterface?
+    
+    public init() {
+        
+    }
+    
+    private func setAppleSignInDelegate(_ delegate: (any AppleSignInDelegate)?) {
+        AppleSignInManager.shared.delegate = delegate
+    }
+    
+    private func checkLoginStatus() {
+        isLoggedIn ? view?.setLoggedView() : view?.setLogoutedView()
+    }
+    
+    private func succesFetchUserData(_ model: UserModel?) {
+        setUserModel(model)
+        view?.setLoggedView()
+    }
+    
+    private func failureFetchUserData(_ error: Error?) {
+        view?.showAlert(error?.localizedDescription)
+        view?.setLogoutedView()
+    }
+    
+    private func setUserModel(_ model: UserModel?) {
+        self.userModel = model
+    }
+}
+
+extension ProfileViewModel: ProfileViewModelInterface {
+    public func viewDidLoad() {
+        view?.configureUI()
+        setAppleSignInDelegate(view?.getSelf())
+    }
+    
+    public func viewDidAppear() {
+        checkLoginStatus()
+    }
+    
+    public func viewDidLAyoutSubviews() {
+        view?.setConstraints()
+    }
+    
+    public func getUser() {
         FirebaseManager.fetchCurrentUserData { [weak self] model, error in
             guard error == nil else {
-                debugPrint(error?.localizedDescription ?? "Fetch user data error")
+                self?.failureFetchUserData(error)
                 return
             }
             
-            if let model {
-                self?.userModel = model
-            }
+            self?.succesFetchUserData(model)
         }
     }
 }
