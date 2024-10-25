@@ -9,16 +9,8 @@ import Foundation
 import CapstoneProjectData
 
 final class ProfileViewModel {
-    var performingSomething: Bool = true {
-        didSet {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
-            }
-        }
-    }
-    
-    @Published private(set) var isLoggedIn: Bool?
-    @Published private(set) var userModel: UserModel?
+    private var isLoggedIn: Bool?
+    private var userModel: UserModel?
     
     func checkLoginStatus() {
         if AppleSignInFirebaseAuth.shared.isUserLoggedIn() {

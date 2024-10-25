@@ -10,15 +10,16 @@ import Combine
 import CapstoneProjectData
 import UIKit.UIImage
 
-public protocol CartViewModelInterface {
+public protocol CartViewModelInterface: Errorable {
     var total: String { get }
+    var cellLenght: CGFloat { get }
     var cartProductCount: Int { get }
     
     func viewDidLoad()
     func viewDidAppear()
     func viewDidLayoutSubviews()
     
-    func confirmPurchases()
+    func saveUserPurchases()
     func getCartItem(_ index: Int) -> CartProduct?
     func removeCartItem(_ cartProduct: CartProduct)
     func getImage(_ endpoint: String) async -> UIImage?
@@ -43,6 +44,10 @@ final public class CartViewModel {
         cartProducts?.count ?? 0
     }
     
+    public var cellLenght: CGFloat {
+        128
+    }
+    
     public init(networkManager: NetworkManagerProtocol = NetworkManager(),
          main: DispatchQueueInterface = DispatchQueue.main) {
         self.networkManager = networkManager
@@ -53,12 +58,22 @@ final public class CartViewModel {
         networkManager.fetchBasket { [weak self] result in
             switch result {
             case .success(let basketItems):
-                self?.rearangeDuplicatedItems(basketItems)
+                self?.successGetCartItems(basketItems)
             case .failure(let error):
-                debugPrint(error.localizedDescription)
-                self?.rearangeDuplicatedItems([])
+                self?.failureGetCartItems(error)
             }
         }
+    }
+    
+    private func successGetCartItems(_ basketItems: [CartProduct]) {
+        rearangeDuplicatedItems(basketItems)
+        changeButtonEnabledState(true)
+    }
+    
+    private func failureGetCartItems(_ error: Error) {
+        rearangeDuplicatedItems([])
+        changeButtonEnabledState(false)
+        handleError(error)
     }
 }
 
@@ -73,9 +88,7 @@ extension CartViewModel: CartViewModelInterface {
                 do {
                     let imageData = try await networkManager.fetchImages(imageEndpoint: endpoint)
                     
-                    if let image = UIImage(data: imageData) {
-                        continuation.resume(returning: image)
-                    }
+                    continuation.resume(returning: UIImage(data: imageData))
                 } catch {
                     view?.handleError(error)
                 }
@@ -90,7 +103,6 @@ extension CartViewModel: CartViewModelInterface {
     
     public func viewDidLoad() {
         view?.configureUIElements()
-        getCartItems()
     }
     
     public func viewDidAppear() {
@@ -154,13 +166,9 @@ extension CartViewModel: CartViewModelInterface {
         view?.reloadTableView()
     }
     
-    public func confirmPurchases() {
-        if !rawCartProducts.isEmpty {
-            saveUserPurchases()
-        }
-    }
-    
     public func saveUserPurchases() {
+        guard !rawCartProducts.isEmpty else { return }
+        
         FirebaseManager.fetchCurrentUserData { [weak self] model, error in
             guard error == nil else {
                 debugPrint(error?.localizedDescription ?? "Fetch user error")
@@ -206,5 +214,9 @@ extension CartViewModel: CartViewModelInterface {
                 }
             }
         }
+    }
+    
+    private func changeButtonEnabledState(_ state: Bool) {
+        view?.setButtonsEnability(state)
     }
 }

@@ -12,7 +12,6 @@ public struct CartProduct: Codable, Equatable {
         && lhs.category == rhs.category
         && lhs.price == rhs.price
         && lhs.brand == rhs.brand
-        && lhs.orderCount == rhs.orderCount
     }
     
     public let cartId: Int

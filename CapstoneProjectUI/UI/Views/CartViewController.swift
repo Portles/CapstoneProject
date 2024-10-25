@@ -14,6 +14,7 @@ public protocol CartViewControllerInterface: AnyObject, Errorable, Alertable {
     func showConfirmPurchasesAlert()
     func reloadTableView()
     func setContraints()
+    func setButtonsEnability(_ state: Bool)
 }
 
 final public class CartViewController: UIViewController {
@@ -125,7 +126,7 @@ extension CartViewController: CartViewControllerInterface {
     public func showConfirmPurchasesAlert() {
         let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { [weak self] _ in
-            self?.viewModel.confirmPurchases()
+            self?.viewModel.saveUserPurchases()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.destructive, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -159,11 +160,17 @@ extension CartViewController: CartViewControllerInterface {
             tableView.bottomAnchor.constraint(equalTo: totalPriceLabel.topAnchor, constant: -20)
         ])
     }
+    
+    public func setButtonsEnability(_ state: Bool) {
+        main.async { [weak self] in
+            self?.confirmPurchasesButton.isEnabled = state
+        }
+    }
 }
 
 extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        146
+        viewModel.cellLenght
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -171,12 +178,11 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: CartTableViewCell = tableView.dequeueReusableCell(withIdentifier: CartTableViewCell.identifier, for: indexPath) as! CartTableViewCell
         guard let cartItem: CartProduct = viewModel.getCartItem(indexPath.row) else { return UITableViewCell() }
         
+        let cell: CartTableViewCell = tableView.dequeueReusableCell(withIdentifier: CartTableViewCell.identifier, for: indexPath) as! CartTableViewCell
         cell.delegate = self
-        cell.index = indexPath
-        
+        cell.setIndex(indexPath)
         cell.configure(imageName: cartItem.image, name: cartItem.name, price: cartItem.price, count: cartItem.orderCount)
         
         Task.detached {

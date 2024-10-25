@@ -17,7 +17,7 @@ final class CartTableViewCell: UITableViewCell, Errorable {
     
     var delegate: CartTableViewCellDelegate?
     
-    var index: IndexPath?
+    private var index: IndexPath?
     
     private let productImageView: UIImageView = {
         let imageView: UIImageView = UIImageView()
@@ -129,6 +129,10 @@ final class CartTableViewCell: UITableViewCell, Errorable {
         nameLabel.text = name
         priceLabel.text = "\(price)TL"
         countLabel.text = "Count: \(count)"
+    }
+    
+    func setIndex(_ index: IndexPath) {
+        self.index = index
     }
     
     func setImage(_ uiImage: UIImage?) {

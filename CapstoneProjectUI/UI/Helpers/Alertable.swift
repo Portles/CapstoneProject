@@ -16,6 +16,9 @@ public extension Alertable where Self: UIViewController {
         let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let action: UIAlertAction = UIAlertAction(title: "OK", style: .destructive)
         alert.addAction(action)
-        present(alert, animated: true)
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.present(alert, animated: true)
+        }
     }
 }
