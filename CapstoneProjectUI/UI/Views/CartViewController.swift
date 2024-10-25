@@ -6,14 +6,19 @@
 //
 
 import UIKit
-import Combine
 import FirebaseAuth
 import CapstoneProjectData
 
-final public class CartViewController: UIViewController, Alertable {
-    private let viewModel: CartViewModel = CartViewModel()
-    
-    private var cancellables: Set<AnyCancellable> = []
+public protocol CartViewControllerInterface: AnyObject, Errorable, Alertable {
+    func configureUIElements()
+    func showConfirmPurchasesAlert()
+    func reloadTableView()
+    func setContraints()
+}
+
+final public class CartViewController: UIViewController {
+    private let viewModel: CartViewModelInterface
+    private let main: DispatchQueueInterface
     
     private let activityIndicator: UIActivityIndicatorView = {
         let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
@@ -58,47 +63,43 @@ final public class CartViewController: UIViewController, Alertable {
         return button
     }()
     
+    public init(viewModel: CartViewModelInterface,
+                main: DispatchQueueInterface) {
+        self.viewModel = viewModel
+        self.main = main
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+        viewModel.viewDidLoad()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.viewDidAppear()
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        viewModel.viewDidLayoutSubviews()
+    }
+}
+
+extension CartViewController: CartViewControllerInterface {
+    public func reloadTableView() {
+        main.async { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+    
+    public func configureUIElements() {
         view.backgroundColor = .systemBackground
         
-        bindViewModel()
-        
-        configureUIElements()
-    }
-    
-    override public func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        viewModel.getCartItems()
-    }
-    
-    private func bindViewModel() {
-        viewModel.$cartProducts
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] newValue in
-                self?.tableView.reloadData()
-                self?.calculatePrice()
-                
-//                self?.viewModel.checkNewValue(newValue)
-//                
-//                self?.confirmPurchasesButton.isEnabled = self?.viewModel.confirmButtonEnability
-//                self?.confirmPurchasesButton.layer.opacity = self?.viewModel.confirmButtonOpacity
-                
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$message
-            .receive(on: DispatchQueue.main)
-            .dropFirst()
-            .sink { [weak self] message in
-                self?.showAlert(message)
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func configureUIElements() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -114,8 +115,6 @@ final public class CartViewController: UIViewController, Alertable {
         
         confirmPurchasesButton.addAction(confirmButtonAction, for: .touchUpInside)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(performingSomethingChanged), name: .performingSomethingChanged, object: nil)
-        
         view.addSubview(activityIndicator)
         view.addSubview(tableView)
         view.addSubview(totalPriceLabel)
@@ -123,7 +122,7 @@ final public class CartViewController: UIViewController, Alertable {
         view.addSubview(confirmPurchasesButton)
     }
     
-    private func showConfirmPurchasesAlert() {
+    public func showConfirmPurchasesAlert() {
         let alert = UIAlertController(title: "Confirm Purchases", message: "Confirm purchases to proceed", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler: { [weak self] _ in
             self?.viewModel.confirmPurchases()
@@ -132,25 +131,11 @@ final public class CartViewController: UIViewController, Alertable {
         self.present(alert, animated: true, completion: nil)
     }
     
-    @objc private func performingSomethingChanged() {
-        let isLoading = viewModel.performingSomething
-        activityIndicator.isHidden = !isLoading
-        if isLoading {
-            activityIndicator.startAnimating()
-            view.isUserInteractionEnabled = false
-        } else {
-            activityIndicator.stopAnimating()
-            view.isUserInteractionEnabled = true
-        }
-    }
-    
-    private func calculatePrice() {
+    private func setPriceLabel() {
         totalPriceValueLabel.text = viewModel.total
     }
     
-    override public func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
+    public func setContraints() {
         activityIndicator.center = view.center
         activityIndicator.frame = view.bounds
         
@@ -182,17 +167,27 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.cartProducts.count
+        viewModel.cartProductCount
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CartTableViewCell = tableView.dequeueReusableCell(withIdentifier: CartTableViewCell.identifier, for: indexPath) as! CartTableViewCell
-        let cartItem: CartProduct = viewModel.cartProducts[indexPath.row]
+        guard let cartItem: CartProduct = viewModel.getCartItem(indexPath.row) else { return UITableViewCell() }
         
         cell.delegate = self
         cell.index = indexPath
         
         cell.configure(imageName: cartItem.image, name: cartItem.name, price: cartItem.price, count: cartItem.orderCount)
+        
+        Task.detached {
+            do {
+                let image = await self.viewModel.getImage(cartItem.image)
+                
+                return await MainActor.run {
+                    cell.setImage(image)
+                }
+            }
+        }
         
         return cell
     }
@@ -200,7 +195,7 @@ extension CartViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension CartViewController: CartTableViewCellDelegate {
     func didTapRemoveButton(_ index: IndexPath) {
-        let cartItem: CartProduct = viewModel.cartProducts[index.row]
+        guard let cartItem: CartProduct = viewModel.getCartItem(index.row) else { return }
         
         viewModel.removeCartItem(cartItem)
     }

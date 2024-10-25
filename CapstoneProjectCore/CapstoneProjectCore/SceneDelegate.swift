@@ -29,7 +29,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         firstNavController.navigationBar.prefersLargeTitles = true
         firstNavController.tabBarItem = UITabBarItem(title: "Shop", image: UIImage(systemName: "bag.fill"), tag: 0)
         
-        let secondVC = CartViewController()
+        let secondVCViewModel = CartViewModel(networkManager: networkManager, main: main)
+        let secondVC = CartViewController(viewModel: secondVCViewModel, main: main)
+        secondVCViewModel.view = secondVC
         secondVC.view.backgroundColor = .systemBackground
         secondVC.title = "Cart"
         let secondNavController = UINavigationController(rootViewController: secondVC)

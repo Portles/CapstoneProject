@@ -8,41 +8,48 @@
 import Foundation
 import Combine
 import CapstoneProjectData
+import UIKit.UIImage
 
-protocol CartViewModelInterface {
+public protocol CartViewModelInterface {
+    var total: String { get }
+    var cartProductCount: Int { get }
     
+    func viewDidLoad()
+    func viewDidAppear()
+    func viewDidLayoutSubviews()
+    
+    func confirmPurchases()
+    func getCartItem(_ index: Int) -> CartProduct?
+    func removeCartItem(_ cartProduct: CartProduct)
+    func getImage(_ endpoint: String) async -> UIImage?
 }
 
-final class CartViewModel: CartViewModelInterface {
+final public class CartViewModel {
     private let networkManager: NetworkManagerProtocol
     
-    var performingSomething: Bool = false {
-        didSet {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .performingSomethingChanged, object: nil)
-            }
-        }
-    }
+    public weak var view: CartViewControllerInterface?
     
     private let main: DispatchQueueInterface
-    @Published private(set) var cartProducts: [CartProduct] = []
-    @Published private(set) var message: String?
+    
+    private var cartProducts: [CartProduct]?
     
     private var rawCartProducts: [CartProduct] = []
     
-    var total: String {
+    public var total: String {
         calculateTotal()
     }
     
-    init(networkManager: NetworkManagerProtocol = NetworkManager(), main: DispatchQueueInterface = DispatchQueue.main) {
-        self.networkManager = networkManager
-        self.main = main
-        getCartItems()
+    public var cartProductCount: Int {
+        cartProducts?.count ?? 0
     }
     
-    func getCartItems() {
-        performingSomething = true
-        
+    public init(networkManager: NetworkManagerProtocol = NetworkManager(),
+         main: DispatchQueueInterface = DispatchQueue.main) {
+        self.networkManager = networkManager
+        self.main = main
+    }
+    
+    private func getCartItems() {
         networkManager.fetchBasket { [weak self] result in
             switch result {
             case .success(let basketItems):
@@ -53,18 +60,55 @@ final class CartViewModel: CartViewModelInterface {
             }
         }
     }
+}
+
+extension CartViewModel: CartViewModelInterface {
+    public func viewDidLayoutSubviews() {
+        view?.setContraints()
+    }
+    
+    public func getImage(_ endpoint: String) async -> UIImage? {
+        return await withCheckedContinuation { continuation in
+            Task {
+                do {
+                    let imageData = try await networkManager.fetchImages(imageEndpoint: endpoint)
+                    
+                    if let image = UIImage(data: imageData) {
+                        continuation.resume(returning: image)
+                    }
+                } catch {
+                    view?.handleError(error)
+                }
+            }
+        }
+    }
+    
+    public func getCartItem(_ index: Int) -> CartProduct? {
+        guard let product = cartProducts?[safe: index] else { return nil }
+        return product
+    }
+    
+    public func viewDidLoad() {
+        view?.configureUIElements()
+        getCartItems()
+    }
+    
+    public func viewDidAppear() {
+        getCartItems()
+        view?.reloadTableView()
+    }
     
     private func calculateTotal() -> String {
         var total: Int = 0
         
-        cartProducts.forEach { product in
+        cartProducts?.forEach { product in
             total += product.price * product.orderCount
         }
         
         return "\(total)TL"
     }
     
-    func removeCartItem(_ cartProduct: CartProduct) {
+    public func removeCartItem(_ cartProduct: CartProduct) {
         let cartIdsToRemove: [Int] = rawCartProducts.compactMap { rawCartProduct in
             guard rawCartProduct == cartProduct else {
                 return nil
@@ -87,7 +131,7 @@ final class CartViewModel: CartViewModelInterface {
         }
     }
     
-    private func rearangeDuplicatedItems(_ cartProducts: [CartProduct]) {
+    public func rearangeDuplicatedItems(_ cartProducts: [CartProduct]) {
         var mergedProducts: [CartProduct] = []
         
         rawCartProducts = cartProducts
@@ -106,19 +150,17 @@ final class CartViewModel: CartViewModelInterface {
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            self?.performingSomething = false
-        }
         self.cartProducts = mergedProducts
+        view?.reloadTableView()
     }
     
-    func confirmPurchases() {
+    public func confirmPurchases() {
         if !rawCartProducts.isEmpty {
             saveUserPurchases()
         }
     }
     
-    private func saveUserPurchases() {
+    public func saveUserPurchases() {
         FirebaseManager.fetchCurrentUserData { [weak self] model, error in
             guard error == nil else {
                 debugPrint(error?.localizedDescription ?? "Fetch user error")
@@ -134,17 +176,16 @@ final class CartViewModel: CartViewModelInterface {
         }
     }
     
-    private func saveBuyHistory(userData: UserModel) {
+    public func saveBuyHistory(userData: UserModel) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let dateString = dateFormatter.string(from: Date())
         
-        let buyHistory = BuyHistory(id: userData.uid, buyerName: userData.fullName ?? "Unknown name", buyDate: dateString, buyyedProducts: cartProducts)
+        let buyHistory = BuyHistory(id: userData.uid, buyerName: userData.fullName ?? "Unknown name", buyDate: dateString, buyyedProducts: cartProducts ?? [])
         
         FirebaseManager.saveBuyHistory(buyHistory) { [weak self] error in
             guard error == nil else {
                 debugPrint(error?.localizedDescription ?? "Save buy history error")
-                self?.message = "Purchase could not be completed, try again."
                 return
             }
             
@@ -152,18 +193,16 @@ final class CartViewModel: CartViewModelInterface {
         }
     }
     
-    private func clearCart() {
+    public func clearCart() {
         for rawCartProduct in rawCartProducts {
             networkManager.removeFromCart(rawCartProduct.cartId) { [weak self] result in
                 switch result {
                 case .success(_):
                     if self?.rawCartProducts.last?.cartId == rawCartProduct.cartId {
                         self?.getCartItems()
-                        self?.message = "Purchase completed Thank you"
                     }
                 case .failure(let error):
-                    debugPrint(error.localizedDescription)
-                    self?.message = "Purchase could not be completed, try again."
+                    self?.view?.handleError(error)
                 }
             }
         }

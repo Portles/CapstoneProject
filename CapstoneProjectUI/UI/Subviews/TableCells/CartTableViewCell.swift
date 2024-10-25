@@ -126,23 +126,13 @@ final class CartTableViewCell: UITableViewCell, Errorable {
     }
     
     func configure(imageName: String, name: String, price: Int, count: Int) {
-//        Task {
-//            do {
-//                let imageData = try await networkManager.fetchImages(imageEndpoint: imageName)
-//                
-//                if let image = UIImage(data: imageData) {
-//                    DispatchQueue.main.async { [weak self] in
-//                        self?.productImageView.image = image
-//                    }
-//                }
-//            } catch {
-//                handleError(error)
-//            }
-//        }
-        
         nameLabel.text = name
         priceLabel.text = "\(price)TL"
         countLabel.text = "Count: \(count)"
+    }
+    
+    func setImage(_ uiImage: UIImage?) {
+        productImageView.image = uiImage
     }
     
     override func prepareForReuse() {
