@@ -29,24 +29,10 @@ final public class CartViewModel {
     private let networkManager: NetworkManagerProtocol
     
     public weak var view: CartViewControllerInterface?
-    
     private let main: DispatchQueueInterface
     
     private var cartProducts: [CartProduct]?
-    
     private var rawCartProducts: [CartProduct] = []
-    
-    public var total: String {
-        calculateTotal()
-    }
-    
-    public var cartProductCount: Int {
-        cartProducts?.count ?? 0
-    }
-    
-    public var cellLenght: CGFloat {
-        128
-    }
     
     public init(networkManager: NetworkManagerProtocol = NetworkManager(),
          main: DispatchQueueInterface = DispatchQueue.main) {
@@ -78,6 +64,18 @@ final public class CartViewModel {
 }
 
 extension CartViewModel: CartViewModelInterface {
+    public var total: String {
+        calculateTotal()
+    }
+    
+    public var cartProductCount: Int {
+        cartProducts?.count ?? 0
+    }
+    
+    public var cellLenght: CGFloat {
+        128
+    }
+    
     public func viewDidLayoutSubviews() {
         view?.setContraints()
     }
@@ -97,7 +95,7 @@ extension CartViewModel: CartViewModelInterface {
     }
     
     public func getCartItem(_ index: Int) -> CartProduct? {
-        guard let product = cartProducts?[safe: index] else { return nil }
+        var product = cartProducts?[safe: index]
         return product
     }
     

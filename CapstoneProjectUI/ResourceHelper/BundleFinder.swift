@@ -21,10 +21,8 @@ extension Foundation.Bundle {
         if let override = ProcessInfo.processInfo.environment["PACKAGE_RESOURCE_BUNDLE_PATH"] {
             candidates.append(URL(fileURLWithPath: override))
             if let subpaths = try? FileManager.default.contentsOfDirectory(atPath: override) {
-                for subpath in subpaths {
-                    if subpath.hasSuffix(".framework") {
-                        candidates.append(URL(fileURLWithPath: override + "/" + subpath))
-                    }
+                for subpath in subpaths where subpath.hasSuffix(".framework") {
+                    candidates.append(URL(fileURLWithPath: override + "/" + subpath))
                 }
             }
         }

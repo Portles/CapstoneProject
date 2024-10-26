@@ -115,8 +115,9 @@ final class LoggedInView: UIView {
     
     func configure(with user: UserModel) {
         DispatchQueue.main.async { [weak self] in
-            self?.emailLabel.text = user.email
-            self?.nameLabel.text = user.fullName
+            guard let self else { return }
+            emailLabel.text = user.email
+            nameLabel.text = user.fullName
         }
     }
     
@@ -166,22 +167,28 @@ final class LoggedInView: UIView {
     
     func getLatestPurchase() {
         FirebaseManager.fetchBuyHistories { [weak self] model, error in
+            guard let self else { return }
             guard error == nil else {
-                self?.buyHistoryLabel.isHidden = true
-                self?.noLatestPurchaseview.isHidden = false
-                self?.tableView.isHidden = true
-                debugPrint(error?.localizedDescription ?? "Fetch buy histories error")
+                getLatestPurchaseError()
                 return
             }
             
-            if let model {
-                self?.buyHistoryLabel.isHidden = false
-                self?.noLatestPurchaseview.isHidden = true
-                self?.lastPurchases = model.buyyedProducts
-                self?.tableView.isHidden = false
-                self?.tableView.reloadData()
-            }
+            getLatestPurchaseSuccess(model)
         }
+    }
+    
+    private func getLatestPurchaseSuccess(_ model: BuyHistory?) {
+        lastPurchases = model?.buyyedProducts
+        buyHistoryLabel.isHidden = false
+        noLatestPurchaseview.isHidden = true
+        tableView.isHidden = false
+        tableView.reloadData()
+    }
+    
+    private func getLatestPurchaseError() {
+        buyHistoryLabel.isHidden = true
+        noLatestPurchaseview.isHidden = false
+        tableView.isHidden = true
     }
 }
 
