@@ -48,7 +48,8 @@ final public class ProductsViewController: UIViewController {
         return collectionView
     }()
     
-    public init(viewModel: ProductsViewModelInterface, main: DispatchQueueInterface) {
+    public init(viewModel: ProductsViewModelInterface,
+                main: DispatchQueueInterface) {
         self.viewModel = viewModel
         self.main = main
         super.init(nibName: nil, bundle: nil)
@@ -77,9 +78,10 @@ final public class ProductsViewController: UIViewController {
             newSize = CGSize(width: screenSize, height: screenSize * 1.2)
         }
         
-        UIView.animate(withDuration: 0.3) {
-            layout?.itemSize = newSize
-            self.collectionView.collectionViewLayout.invalidateLayout()
+        UIView.animate(withDuration: 0.3) { [weak self, layout] in
+            guard let self, let layout else { return }
+            layout.itemSize = newSize
+            collectionView.collectionViewLayout.invalidateLayout()
         }
     }
     
@@ -87,24 +89,14 @@ final public class ProductsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         viewModel.viewDidLayoutSubviews()
     }
-}
-
-extension ProductsViewController: ProductsViewControllerInterface {
     
-    public func reloadCollectionViewData() {
-        main.async { [weak self] in
-            self?.collectionView.reloadData()
-        }
-    }
-    
-    public func configureUIElements() {
-        view.backgroundColor = .secondarySystemBackground
-        
-        collectionViewSegmentControl.addTarget(self, action: #selector(didSegmentValueChanged(_:)), for: .valueChanged)
-        
+    private func configureSegmentedControl() {
         let segmentItem = UIBarButtonItem(customView: collectionViewSegmentControl)
         navigationItem.rightBarButtonItem = segmentItem
-        
+        collectionViewSegmentControl.addTarget(self, action: #selector(didSegmentValueChanged(_:)), for: .valueChanged)
+    }
+    
+    private func configureCollectionView() {
         collectionView.delegate = self
         collectionView.dataSource = self
         
@@ -112,6 +104,21 @@ extension ProductsViewController: ProductsViewControllerInterface {
         collectionView.dropDelegate = self
         
         view.addSubview(collectionView)
+    }
+}
+
+extension ProductsViewController: ProductsViewControllerInterface {
+    public func reloadCollectionViewData() {
+        main.async { [weak self] in
+            guard let self else { return }
+            collectionView.reloadData()
+        }
+    }
+    
+    public func configureUIElements() {
+        view.backgroundColor = .secondarySystemBackground
+        configureSegmentedControl()
+        configureCollectionView()
     }
     
     public func setConstraints() {
@@ -126,8 +133,8 @@ extension ProductsViewController: ProductsViewControllerInterface {
 
 extension ProductsViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let product = viewModel.getProduct(index: indexPath.row) else { return }
-        guard let viewController = viewModel.getProductDetailView(product: product) else { return }
+        guard var product = viewModel.getProduct(index: indexPath.row),
+              let viewController = viewModel.getProductDetailView(product: product) else { return }
         present(viewController, animated: true, completion: nil)
     }
 }

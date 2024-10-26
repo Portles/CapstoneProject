@@ -11,6 +11,7 @@ import CapstoneProjectData
 import UIKit.UIImage
 
 public protocol CartViewModelInterface: Errorable {
+    var view: CartViewControllerInterface? { get set }
     var total: String { get }
     var cellLenght: CGFloat { get }
     var cartProductCount: Int { get }

@@ -25,11 +25,11 @@ final public class ProductDetailViewModel {
     
     weak public var view: ProductDetailViewControllerInterface?
     
-    private let product: Product
+    private let product: Product?
     
     private var imageData: Data?
     
-    init(product: Product, networkManager: NetworkManagerProtocol,
+    init(product: Product?, networkManager: NetworkManagerProtocol,
          main: DispatchQueueInterface = DispatchQueue.main) {
         self.product = product
         self.networkManager = networkManager
@@ -39,7 +39,7 @@ final public class ProductDetailViewModel {
 
 extension ProductDetailViewModel: ProductDetailViewModelInterface {
     public var productName: String {
-        product.name
+        product?.name ?? ""
     }
     
     public func viewDidLoad() {
@@ -52,11 +52,11 @@ extension ProductDetailViewModel: ProductDetailViewModelInterface {
     
     public func addToBasket(orderCount: Int) {
         let productRequest: ProductRequest = ProductRequest(
-            name: product.name,
-            image: product.image,
-            category: product.category,
-            price: product.price,
-            brand: product.brand,
+            name: product?.name ?? "",
+            image: product?.image ?? "",
+            category: product?.category ?? "",
+            price: product?.price ?? .zero,
+            brand: product?.brand ?? "",
             orderCount: orderCount
         )
         
@@ -80,7 +80,7 @@ extension ProductDetailViewModel: ProductDetailViewModelInterface {
         return await withCheckedContinuation { continuation in
             Task {
                 do {
-                    let imageData = try await self.networkManager.fetchImages(imageEndpoint: product.image)
+                    let imageData = try await self.networkManager.fetchImages(imageEndpoint: product?.image ?? "")
                     
                     if let uiImage = UIImage(data: imageData) {
                         continuation.resume(returning: uiImage)

@@ -20,7 +20,7 @@ public protocol ProductsViewModelInterface: AnyObject, Errorable {
     func reArrangeProduct(_ sourceIndexPath: IndexPath, _ destinationIndexPath: IndexPath, _ product: Product)
     func getProductImage(_ imageName: String) async -> UIImage
     
-    func getProductDetailView(product: Product) -> UIViewController?
+    func getProductDetailView(product: Product?) -> UIViewController?
 }
 
 final public class ProductsViewModel {
@@ -67,8 +67,7 @@ extension ProductsViewModel: ProductsViewModelInterface {
     }
     
     public func getProduct(index: Int) -> Product? {
-        guard let product = products?[safe: index] else { return nil }
-        return product
+        products?[safe: index]
     }
     
     public func reArrangeProduct(_ sourceIndexPath: IndexPath, _ destinationIndexPath: IndexPath, _ product: Product) {
@@ -103,7 +102,7 @@ extension ProductsViewModel: ProductsViewModelInterface {
         }
     }
     
-    public func getProductDetailView(product: Product) -> UIViewController? {
+    public func getProductDetailView(product: Product?) -> UIViewController? {
         let viewModel = ProductDetailViewModel(product: product, networkManager: networkManager, main: main)
         let viewController: ProductDetailViewController = ProductDetailViewController(viewModel: viewModel)
         viewModel.view = viewController
