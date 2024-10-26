@@ -15,19 +15,20 @@ class CartViewModelTests: XCTestCase {
     
     var viewModel: CartViewModelInterface!
     var mockNetworkManager: MockNetworkManager!
-    var cancellables: Set<AnyCancellable>!
+    var mockView: MockCartViewController!
     
     override func setUp() {
         super.setUp()
         mockNetworkManager = MockNetworkManager()
         viewModel = CartViewModel(networkManager: mockNetworkManager)
-        cancellables = []
+        mockView = MockCartViewController()
+        viewModel.view = mockView
     }
     
     override func tearDown() {
         viewModel = nil
         mockNetworkManager = nil
-        cancellables = nil
+        mockView = nil
         super.tearDown()
     }
     
@@ -42,7 +43,39 @@ class CartViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(mockNetworkManager.invokedFetchBasket, true)
         XCTAssertEqual(mockNetworkManager.invokedFetchBasketCount, 1)
+        
+        XCTAssertEqual(mockView.invokedSetButtonsEnability, true)
+        XCTAssertEqual(mockView.invokedSetButtonsEnabilityCount, 1)
+        XCTAssertTrue(mockView.invokedSetButtonsEnabilityParameters! == (true, 1.0))
+        
+        XCTAssertEqual(mockView.invokedReloadTableView, true)
+        XCTAssertEqual(mockView.invokedReloadTableViewCount, 1)
+        
+        XCTAssertEqual(viewModel.getCartProducts(), expectedCartProducts)
         XCTAssertEqual(viewModel.cartProductCount, 1)
+    }
+    
+    func test_viewDidAppear_ResultIsFailure_InvokesNeccessaryMethods() {
+        // Given
+        mockNetworkManager.stubbedFetchBasketResult = (.failure(.invalidData), ())
+        
+        // When
+        viewModel.viewDidAppear()
+        
+        // Then
+        XCTAssertEqual(mockNetworkManager.invokedFetchBasket, true)
+        XCTAssertEqual(mockNetworkManager.invokedFetchBasketCount, 1)
+        
+        XCTAssertEqual(mockView.invokedSetButtonsEnability, true)
+        XCTAssertEqual(mockView.invokedSetButtonsEnabilityCount, 1)
+        XCTAssertTrue(mockView.invokedSetButtonsEnabilityParameters! == (false, 0.7))
+        
+        XCTAssertEqual(mockView.invokedHandleError, true)
+        XCTAssertEqual(mockView.invokedHandleErrorCount, 1)
+        XCTAssertEqual(mockView.invokedHandleErrorParameters as? NetworkError, NetworkError.invalidData)
+        
+        XCTAssertEqual(viewModel.getCartProducts(), [])
+        XCTAssertEqual(viewModel.cartProductCount, 0)
     }
     
 //    func testGetCartItemsSuccess() {

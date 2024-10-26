@@ -19,6 +19,7 @@ public protocol CartViewModelInterface: Errorable {
     func viewDidLayoutSubviews()
     
     func saveUserPurchases()
+    func getCartProducts() -> [CartProduct]?
     func getCartItem(_ index: Int) -> CartProduct?
     func removeCartItem(_ cartProduct: CartProduct)
     func getImage(_ endpoint: String) async -> UIImage?
@@ -58,11 +59,15 @@ final public class CartViewModel {
     private func failureGetCartItems(_ error: Error) {
         rearangeDuplicatedItems([])
         view?.setButtonsEnability(state: false, opacity: 0.7)
-        handleError(error)
+        view?.handleError(error)
     }
 }
 
 extension CartViewModel: CartViewModelInterface {
+    public func getCartProducts() -> [CartProduct]? {
+        cartProducts
+    }
+    
     public var total: String {
         calculateTotal()
     }
@@ -159,7 +164,6 @@ extension CartViewModel: CartViewModelInterface {
         }
         
         self.cartProducts = mergedProducts
-        view?.reloadTableView()
     }
     
     public func saveUserPurchases() {

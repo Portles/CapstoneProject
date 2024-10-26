@@ -133,7 +133,7 @@ extension ProductsViewController: ProductsViewControllerInterface {
 
 extension ProductsViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard var product = viewModel.getProduct(index: indexPath.row),
+        guard let product = viewModel.getProduct(index: indexPath.row),
               let viewController = viewModel.getProductDetailView(product: product) else { return }
         present(viewController, animated: true, completion: nil)
     }
