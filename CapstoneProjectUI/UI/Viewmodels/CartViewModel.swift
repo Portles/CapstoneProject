@@ -5,8 +5,6 @@
 //  Created by Nizamet Özkan on 8.10.2024.
 //
 
-import Foundation
-import Combine
 import CapstoneProjectData
 import UIKit.UIImage
 
@@ -27,7 +25,7 @@ public protocol CartViewModelInterface: Errorable {
 }
 
 final public class CartViewModel {
-    private let networkManager: NetworkManagerProtocol
+    private let networkManager: NetworkManagerInterface
     
     public weak var view: CartViewControllerInterface?
     private let main: DispatchQueueInterface
@@ -35,7 +33,7 @@ final public class CartViewModel {
     private var cartProducts: [CartProduct]?
     private var rawCartProducts: [CartProduct] = []
     
-    public init(networkManager: NetworkManagerProtocol = NetworkManager(),
+    public init(networkManager: NetworkManagerInterface = NetworkManager(),
          main: DispatchQueueInterface = DispatchQueue.main) {
         self.networkManager = networkManager
         self.main = main
@@ -54,12 +52,12 @@ final public class CartViewModel {
     
     private func successGetCartItems(_ basketItems: [CartProduct]) {
         rearangeDuplicatedItems(basketItems)
-        changeButtonEnabledState(true)
+        view?.setButtonsEnability(state: true, opacity: 1.0)
     }
     
     private func failureGetCartItems(_ error: Error) {
         rearangeDuplicatedItems([])
-        changeButtonEnabledState(false)
+        view?.setButtonsEnability(state: false, opacity: 0.7)
         handleError(error)
     }
 }
@@ -96,8 +94,7 @@ extension CartViewModel: CartViewModelInterface {
     }
     
     public func getCartItem(_ index: Int) -> CartProduct? {
-        var product = cartProducts?[safe: index]
-        return product
+        cartProducts?[safe: index]
     }
     
     public func viewDidLoad() {
@@ -142,7 +139,7 @@ extension CartViewModel: CartViewModelInterface {
         }
     }
     
-    public func rearangeDuplicatedItems(_ cartProducts: [CartProduct]) {
+    private func rearangeDuplicatedItems(_ cartProducts: [CartProduct]) {
         var mergedProducts: [CartProduct] = []
         
         rawCartProducts = cartProducts
@@ -213,9 +210,5 @@ extension CartViewModel: CartViewModelInterface {
                 }
             }
         }
-    }
-    
-    private func changeButtonEnabledState(_ state: Bool) {
-        view?.setButtonsEnability(state)
     }
 }

@@ -24,14 +24,14 @@ public protocol ProductsViewModelInterface: AnyObject, Errorable {
 }
 
 final public class ProductsViewModel {
-    private let networkManager: NetworkManagerProtocol
+    private let networkManager: NetworkManagerInterface
     private let main: DispatchQueueInterface
     
     weak public var view: ProductsViewControllerInterface?
     
     private var products: [Product]?
     
-    public init(networkManager: NetworkManagerProtocol,
+    public init(networkManager: NetworkManagerInterface,
                 main: DispatchQueueInterface) {
         self.networkManager = networkManager
         self.main = main

@@ -14,7 +14,7 @@ public protocol CartViewControllerInterface: AnyObject, Errorable, Alertable {
     func showConfirmPurchasesAlert()
     func reloadTableView()
     func setContraints()
-    func setButtonsEnability(_ state: Bool)
+    func setButtonsEnability(state: Bool, opacity: Float)
 }
 
 final public class CartViewController: UIViewController {
@@ -161,9 +161,11 @@ extension CartViewController: CartViewControllerInterface {
         ])
     }
     
-    public func setButtonsEnability(_ state: Bool) {
+    public func setButtonsEnability(state: Bool, opacity: Float) {
         main.async { [weak self] in
-            self?.confirmPurchasesButton.isEnabled = state
+            guard let self else { return }
+            confirmPurchasesButton.isEnabled = state
+            confirmPurchasesButton.layer.opacity = opacity
         }
     }
 }

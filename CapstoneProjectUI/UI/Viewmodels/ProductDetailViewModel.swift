@@ -20,7 +20,7 @@ public protocol ProductDetailViewModelInterface: Errorable {
 }
 
 final public class ProductDetailViewModel {
-    private let networkManager: NetworkManagerProtocol
+    private let networkManager: NetworkManagerInterface
     private let main: DispatchQueueInterface
     
     weak public var view: ProductDetailViewControllerInterface?
@@ -29,7 +29,7 @@ final public class ProductDetailViewModel {
     
     private var imageData: Data?
     
-    init(product: Product?, networkManager: NetworkManagerProtocol,
+    init(product: Product?, networkManager: NetworkManagerInterface,
          main: DispatchQueueInterface = DispatchQueue.main) {
         self.product = product
         self.networkManager = networkManager

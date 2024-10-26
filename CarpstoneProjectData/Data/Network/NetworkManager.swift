@@ -7,7 +7,7 @@
 
 import Foundation.NSURL
 
-public protocol NetworkManagerProtocol {
+public protocol NetworkManagerInterface {
     func fetchProducts(_ completion: @escaping (Result<[Product], NetworkError>) -> Void)
     func fetchImages(imageEndpoint: String) async throws -> Data
     func addToBasket(product: ProductRequest, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
@@ -15,7 +15,7 @@ public protocol NetworkManagerProtocol {
     func removeFromCart(_ cartId: Int, _ completion: @escaping (Result<Bool, NetworkError>) -> Void)
 }
 
-final public class NetworkManager: NetworkManagerProtocol {
+final public class NetworkManager: NetworkManagerInterface {
     private let decoder: JSONDecoder = {
         let decoder: JSONDecoder = JSONDecoder()
         decoder.keyDecodingStrategy = .useDefaultKeys
