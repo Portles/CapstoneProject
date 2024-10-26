@@ -8,7 +8,11 @@
 import CapstoneProjectData
 import Foundation
 
-class MockNetworkManager: NetworkManagerProtocol {
+class MockNetworkManager: NetworkManagerInterface {
+    func fetchImages(imageEndpoint: String) async throws -> Data {
+        return Data()
+    }
+    
     
     var invokedFetchProducts = false
     var invokedFetchProductsCount = 0
