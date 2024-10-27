@@ -78,6 +78,19 @@ class CartViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cartProductCount, 0)
     }
     
+    func test_ViewDidLoad_InvokesNeccessaryMethods() {
+        // Given
+        XCTAssertEqual(mockView.invokedConfigureUIElements, false)
+        XCTAssertEqual(mockView.invokedConfigureUIElementsCount, 0)
+        
+        // When
+        viewModel.viewDidLoad()
+        
+        // Then
+        XCTAssertEqual(mockView.invokedConfigureUIElements, true)
+        XCTAssertEqual(mockView.invokedConfigureUIElementsCount, 1)
+    }
+    
 //    func testGetCartItemsSuccess() {
 //        // Given
 //        let expectedProducts = [

@@ -31,13 +31,15 @@ final public class CartViewModel {
     public weak var view: CartViewControllerInterface?
     private let main: DispatchQueueInterface
     
-    private var cartProducts: [CartProduct]?
-    private var rawCartProducts: [CartProduct] = []
+    private var cartProducts: [CartProduct]
+    private var rawCartProducts: [CartProduct]
     
     public init(networkManager: NetworkManagerInterface = NetworkManager(),
          main: DispatchQueueInterface = DispatchQueue.main) {
         self.networkManager = networkManager
         self.main = main
+        self.cartProducts = []
+        self.rawCartProducts = []
     }
     
     private func getCartItems() {
@@ -73,7 +75,7 @@ extension CartViewModel: CartViewModelInterface {
     }
     
     public var cartProductCount: Int {
-        cartProducts?.count ?? 0
+        cartProducts.count
     }
     
     public var cellLenght: CGFloat {
@@ -99,7 +101,7 @@ extension CartViewModel: CartViewModelInterface {
     }
     
     public func getCartItem(_ index: Int) -> CartProduct? {
-        cartProducts?[safe: index]
+        cartProducts[safe: index]
     }
     
     public func viewDidLoad() {
@@ -114,7 +116,7 @@ extension CartViewModel: CartViewModelInterface {
     private func calculateTotal() -> String {
         var total: Int = 0
         
-        cartProducts?.forEach { product in
+        cartProducts.forEach { product in
             total += product.price * product.orderCount
         }
         
@@ -189,7 +191,7 @@ extension CartViewModel: CartViewModelInterface {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let dateString = dateFormatter.string(from: Date())
         
-        let buyHistory = BuyHistory(id: userData.uid, buyerName: userData.fullName ?? "Unknown name", buyDate: dateString, buyyedProducts: cartProducts ?? [])
+        let buyHistory = BuyHistory(id: userData.uid, buyerName: userData.fullName ?? "Unknown name", buyDate: dateString, buyyedProducts: cartProducts)
         
         FirebaseManager.saveBuyHistory(buyHistory) { [weak self] error in
             guard error == nil else {
